@@ -1,0 +1,47 @@
+[
+  { "id": "exit-intrigue-a-venise", "titre": "EXIT – Intrigue à Venise", "annee": 2025, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-intrigue-a-venise/" },
+  { "id": "exit-course-poursuite-a-amsterdam", "titre": "EXIT – Course Poursuite à Amsterdam", "annee": 2025, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-course-poursuite-a-amsterdam/" },
+
+  { "id": "exit-lacademie-de-magie", "titre": "EXIT – L’Académie de Magie", "annee": 2024, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-lacademie-de-magie/" },
+  { "id": "exit-levasion-de-prison", "titre": "EXIT – L’évasion de Prison", "annee": 2024, "difficulte": "Expert", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-levasion-de-prison/" },
+  { "id": "exit-calendrier-de-lavent-la-tempete-silencieuse", "titre": "EXIT – Calendrier de l’Avent – La Tempête Silencieuse", "annee": 2024, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-calendrier-de-lavent-la-tempete-silencieuse/" },
+  { "id": "exit-kids-la-chasse-aux-cookies", "titre": "EXIT Kids – La Chasse aux Cookies", "annee": 2024, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-kids-la-chasse-aux-cookies/" },
+  { "id": "exit-lheritage-du-voyageur", "titre": "EXIT – L’héritage du Voyageur", "annee": 2024, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-lheritage-du-voyageur/" },
+
+  { "id": "exit-la-disparition-de-sherlock-holmes", "titre": "EXIT – La disparition de Sherlock Holmes", "annee": 2023, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-la-disparition-de-sherlock-holmes/" },
+  { "id": "exit-calendrier-de-lavent-a-la-poursuite-du-livre-dor", "titre": "EXIT – Calendrier de l’Avent : À la Poursuite du Livre d’Or", "annee": 2023, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-calendrier-de-lavent-a-la-poursuite-du-livre-dor/" },
+  { "id": "exit-kids-la-jungle-aux-enigmes", "titre": "EXIT Kids – La Jungle aux Énigmes", "annee": 2023, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-kids-la-jungle-aux-enigmes/" },
+  { "id": "exit-le-bandit-de-fortune-city", "titre": "EXIT – Le Bandit de Fortune City", "annee": 2023, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-bandit-de-fortune-city/" },
+  { "id": "exit-le-retour-a-la-cabane-abandonnee", "titre": "EXIT – Le Retour à la Cabane Abandonnée", "annee": 2023, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-retour-a-la-cabane-abandonnee/" },
+
+  { "id": "exit-perils-en-terres-du-milieu", "titre": "EXIT – Périls en Terres du Milieu", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-perils-en-terres-du-milieu/" },
+  { "id": "exit-la-dame-de-la-brume", "titre": "EXIT – La Dame de la Brume", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-la-dame-de-la-brume/" },
+  { "id": "exit-le-labyrinthe-maudit", "titre": "EXIT – Le Labyrinthe Maudit", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-labyrinthe-maudit/" },
+  { "id": "exit-le-cimetiere-des-ombres", "titre": "EXIT – Le Cimetière des Ombres", "annee": 2022, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-cimetiere-des-ombres/" },
+  { "id": "exit-puzzle-le-chateau-lugubre", "titre": "EXIT Puzzle – Le Château Lugubre", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-puzzle-le-chateau-lugubre/" },
+  { "id": "exit-calendrier-de-lavent-la-mysterieuse-grotte-de-glace", "titre": "EXIT – Calendrier de l’Avent : La Mystérieuse Grotte de Glace", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-calendrier-de-lavent-la-mysterieuse-grotte-de-glace/" },
+  { "id": "exit-la-foret-enchantee", "titre": "EXIT – La Forêt Enchantée", "annee": 2022, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-la-foret-enchantee/" },
+  { "id": "exit-la-porte-entre-les-mondes", "titre": "EXIT – La Porte entre les Mondes", "annee": 2022, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-la-porte-entre-les-mondes/" },
+
+  { "id": "exit-puzzle-le-temple-perdu", "titre": "EXIT Puzzle – Le Temple Perdu", "annee": 2021, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-puzzle-le-temple-perdu/" },
+  { "id": "exit-puzzle-le-phare-solitaire", "titre": "EXIT Puzzle – Le Phare Solitaire", "annee": 2021, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-puzzle-le-phare-solitaire/" },
+  { "id": "exit-le-vol-vers-linconnu", "titre": "EXIT – Le Vol vers l’Inconnu", "annee": 2021, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-vol-vers-linconnu/" },
+  { "id": "exit-laffaire-du-mississippi", "titre": "EXIT – L’Affaire du Mississippi", "annee": 2021, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-laffaire-du-mississippi/" },
+
+  { "id": "exit-la-maison-des-enigmes", "titre": "EXIT – La Maison des Énigmes", "annee": 2020, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-la-maison-des-enigmes/" },
+  { "id": "exit-le-parc-de-lhorreur", "titre": "EXIT – Le Parc de l’Horreur", "annee": 2020, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-parc-de-lhorreur/" },
+  { "id": "exit-les-catacombes-de-leffroi", "titre": "EXIT – Les Catacombes de l’Effroi", "annee": 2020, "difficulte": "Expert", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-les-catacombes-de-leffroi/" },
+
+  { "id": "exit-le-jeu-le-musee-mysterieux", "titre": "EXIT : Le Jeu – Le Musée Mystérieux", "annee": 2019, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-le-musee-mysterieux/" },
+  { "id": "exit-le-jeu-le-manoir-sinistre", "titre": "EXIT : Le Jeu – Le Manoir Sinistre", "annee": 2019, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-le-manoir-sinistre/" },
+
+  { "id": "exit-le-tresor-englouti", "titre": "EXIT – Le Trésor Englouti", "annee": 2018, "difficulte": "Débutant", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-tresor-englouti/" },
+  { "id": "exit-le-cadavre-de-lorient-express", "titre": "EXIT : Le Cadavre de l’Orient Express", "annee": 2018, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-cadavre-de-lorient-express/" },
+  { "id": "exit-le-jeu-lile-oubliee", "titre": "EXIT : Le Jeu – L’Île Oubliée", "annee": 2018, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-lile-oubliee/" },
+  { "id": "exit-le-jeu-le-chateau-interdit", "titre": "EXIT : Le Jeu – Le Château Interdit", "annee": 2018, "difficulte": "Expert", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-le-chateau-interdit/" },
+  { "id": "exit-le-jeu-la-station-polaire", "titre": "EXIT : Le Jeu – La Station Polaire", "annee": 2018, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-la-station-polaire/" },
+
+  { "id": "exit-le-jeu-le-laboratoire-secret", "titre": "EXIT : Le Jeu – Le Laboratoire Secret", "annee": 2017, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-le-laboratoire-secret/" },
+  { "id": "exit-le-jeu-le-tombeau-du-pharaon", "titre": "EXIT : Le Jeu – Le Tombeau du Pharaon", "annee": 2017, "difficulte": "Expert", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-le-tombeau-du-pharaon/" },
+  { "id": "exit-le-jeu-la-cabane-abandonnee", "titre": "EXIT : Le Jeu – La Cabane Abandonnée", "annee": 2017, "difficulte": "Confirmé", "editeur": "IELLO", "imagePage": "iello.fr/jeux/exit-le-jeu-la-cabane-abandonnee/" }
+]
