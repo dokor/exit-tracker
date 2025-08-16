@@ -3,51 +3,142 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mes EXIT – Test liste</title>
+  <title>Mes EXIT</title>
   <meta name="theme-color" content="#1e1e22" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mes EXIT">
   <link rel="stylesheet" href="style.css" />
   <style>
-    .debug{background:#fffae6;border:1px solid #f2e088;padding:8px 12px;border-radius:10px;color:#4b4b00}
+    .cover { width:100%; border-radius:4px; margin-top:8px; }
+    .badge { background:#444; color:#fff; border-radius:3px; padding:2px 5px; font-size:0.8em; }
   </style>
 </head>
 <body>
-  <header class="container">
-    <h1>Mes EXIT</h1>
-    <p class="subtitle">Test affichage sans fetch. Si tu vois la liste + “JS OK ✅”, tout est bon côté app.js.</p>
-    <div id="debug" class="debug">JS non chargé…</div>
+<header class="container">
+  <h1>Mes EXIT</h1>
+  <div class="stats" aria-live="polite">
+    <span id="totalCount">0</span> jeux •
+    <span id="doneCount">0</span> terminés •
+    <span id="progressPct">0%</span> complété
+  </div>
+</header>
 
-    <div class="stats" aria-live="polite">
-      <span id="totalCount">0</span> jeux •
-      <span id="doneCount">0</span> terminés •
-      <span id="progressPct">0%</span> complété
-    </div>
-  </header>
-
-  <main class="container">
-    <ul id="gameList" class="grid" aria-live="polite" aria-busy="true"></ul>
-    <template id="gameItemTpl">
-      <li class="card">
-        <label class="row">
-          <input type="checkbox" class="doneToggle" />
-          <div class="content">
-            <div>
-              <div class="title"></div>
-              <div class="meta"></div>
-            </div>
+<main class="container">
+  <ul id="gameList" class="grid" aria-live="polite" aria-busy="true"></ul>
+  <template id="gameItemTpl">
+    <li class="card">
+      <label class="row">
+        <input type="checkbox" class="doneToggle" />
+        <div class="content">
+          <div>
+            <div class="title"></div>
+            <div class="meta"></div>
+            <img class="cover" alt="" />
           </div>
-        </label>
-      </li>
-    </template>
-  </main>
+        </div>
+      </label>
+    </li>
+  </template>
+</main>
 
-  <footer class="container foot">
-    <small>Version test — aucune image, aucun réseau, juste le rendu de la liste.</small>
-  </footer>
+<footer class="container foot">
+  <small>Version avec images récupérées depuis IELLO</small>
+</footer>
 
-  <!-- important: version pour casser le cache -->
-  <script src="app.js?v=1.5.0"></script>
+<script>
+const STORAGE_KEYS = { DONE:'exit_done_v1', IMG_CACHE:'exit_img_cache_v1' };
+let done = loadJSON(STORAGE_KEYS.DONE, {});
+let imgCache = loadJSON(STORAGE_KEYS.IMG_CACHE, {});
+
+// Liste en dur
+const GAMES = [
+  {"id":"exit-intrigue-a-venise","titre":"EXIT – Intrigue à Venise","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-intrigue-a-venise/"},
+  {"id":"exit-course-poursuite-a-amsterdam","titre":"EXIT – Course Poursuite à Amsterdam","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-course-poursuite-a-amsterdam/"},
+  {"id":"exit-lacademie-de-magie","titre":"EXIT – L’Académie de Magie","annee":2024,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-lacademie-de-magie/"},
+  {"id":"exit-levasion-de-prison","titre":"EXIT – L’évasion de Prison","annee":2024,"difficulte":"Expert","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-levasion-de-prison/"},
+  {"id":"exit-lheritage-du-voyageur","titre":"EXIT – L’héritage du Voyageur","annee":2024,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-lheritage-du-voyageur/"},
+  {"id":"exit-la-disparition-de-sherlock-holmes","titre":"EXIT – La disparition de Sherlock Holmes","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-la-disparition-de-sherlock-holmes/"},
+  {"id":"exit-le-bandit-de-fortune-city","titre":"EXIT – Le Bandit de Fortune City","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-bandit-de-fortune-city/"},
+  {"id":"exit-le-retour-a-la-cabane-abandonnee","titre":"EXIT – Le Retour à la Cabane Abandonnée","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-retour-a-la-cabane-abandonnee/"},
+  {"id":"exit-perils-en-terres-du-milieu","titre":"EXIT – Périls en Terres du Milieu","annee":2022,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-perils-en-terres-du-milieu/"},
+  {"id":"exit-le-cimetiere-des-ombres","titre":"EXIT – Le Cimetière des Ombres","annee":2022,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-cimetiere-des-ombres/"},
+  {"id":"exit-la-porte-entre-les-mondes","titre":"EXIT – La Porte entre les Mondes","annee":2022,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-la-porte-entre-les-mondes/"},
+  {"id":"exit-le-vol-vers-linconnu","titre":"EXIT – Le Vol vers l’Inconnu","annee":2021,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-vol-vers-linconnu/"},
+  {"id":"exit-laffaire-du-mississippi","titre":"EXIT – L’Affaire du Mississippi","annee":2021,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-laffaire-du-mississippi/"},
+  {"id":"exit-la-maison-des-enigmes","titre":"EXIT – La Maison des Énigmes","annee":2020,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-la-maison-des-enigmes/"},
+  {"id":"exit-le-parc-de-lhorreur","titre":"EXIT – Le Parc de l’Horreur","annee":2020,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-parc-de-lhorreur/"},
+  {"id":"exit-les-catacombes-de-leffroi","titre":"EXIT – Les Catacombes de l’Effroi","annee":2020,"difficulte":"Expert","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-les-catacombes-de-leffroi/"},
+  {"id":"exit-le-jeu-le-musee-mysterieux","titre":"EXIT : Le Jeu – Le Musée Mystérieux","annee":2019,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-le-musee-mysterieux/"},
+  {"id":"exit-le-jeu-le-manoir-sinistre","titre":"EXIT : Le Jeu – Le Manoir Sinistre","annee":2019,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-le-manoir-sinistre/"},
+  {"id":"exit-le-tresor-englouti","titre":"EXIT – Le Trésor Englouti","annee":2018,"difficulte":"Débutant","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-tresor-englouti/"},
+  {"id":"exit-le-jeu-le-chateau-interdit","titre":"EXIT : Le Jeu – Le Château Interdit","annee":2018,"difficulte":"Expert","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-le-chateau-interdit/"},
+  {"id":"exit-le-jeu-la-station-polaire","titre":"EXIT : Le Jeu – La Station Polaire","annee":2018,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-la-station-polaire/"},
+  {"id":"exit-le-jeu-le-laboratoire-secret","titre":"EXIT : Le Jeu – Le Laboratoire Secret","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-le-laboratoire-secret/"},
+  {"id":"exit-le-jeu-le-tombeau-du-pharaon","titre":"EXIT : Le Jeu – Le Tombeau du Pharaon","annee":2017,"difficulte":"Expert","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-le-tombeau-du-pharaon/"},
+  {"id":"exit-le-jeu-la-cabane-abandonnee","titre":"EXIT : Le Jeu – La Cabane Abandonnée","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","imagePage":"iello.fr/jeux/exit-le-jeu-la-cabane-abandonnee/"}
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  render(GAMES);
+});
+
+function loadJSON(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback }catch{ return fallback } }
+function saveJSON(k,v){ localStorage.setItem(k, JSON.stringify(v)) }
+
+function render(games){
+  const list = document.getElementById('gameList');
+  const tpl = document.getElementById('gameItemTpl');
+  list.innerHTML = '';
+  const sorted = games.slice().sort((a,b)=> (b.annee-a.annee) || a.titre.localeCompare(b.titre,'fr'));
+  for(const g of sorted){
+    const node = tpl.content.cloneNode(true);
+    const checkbox = node.querySelector('.doneToggle');
+    checkbox.checked = !!done[g.id];
+    checkbox.addEventListener('change', () => {
+      done[g.id] = checkbox.checked || undefined;
+      if (!checkbox.checked) delete done[g.id];
+      saveJSON(STORAGE_KEYS.DONE, done);
+      updateStats(sorted.length);
+    });
+    node.querySelector('.title').textContent = g.titre;
+    node.querySelector('.meta').innerHTML = [
+      g.difficulte ? `<span class="badge">${g.difficulte}</span>` : '',
+      g.annee ? `• ${g.annee}` : '',
+      g.editeur ? `• ${escapeHTML(g.editeur)}` : ''
+    ].filter(Boolean).join(' ');
+    resolveCover(g).then(src => { if (src) node.querySelector('.cover').src = src; });
+    list.appendChild(node);
+  }
+  list.setAttribute('aria-busy','false');
+  updateStats(sorted.length);
+}
+
+function updateStats(total){
+  const doneCount = Object.keys(done).length;
+  const pct = total ? Math.round(doneCount/total*100) : 0;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('doneCount').textContent = doneCount;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+}
+
+function escapeHTML(s){ return s?.replace?.(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) ?? s; }
+
+async function resolveCover(g){
+  if (!g.imagePage) return '';
+  if (imgCache[g.id]) return imgCache[g.id];
+  try{
+    const proxied = 'https://r.jina.ai/' + (g.imagePage.startsWith('http') ? g.imagePage : ('https://' + g.imagePage));
+    const html = await fetch(proxied).then(r => r.text());
+    const m = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+    const url = m?.[1] || '';
+    if (url){
+      imgCache[g.id] = url;
+      saveJSON(STORAGE_KEYS.IMG_CACHE, imgCache);
+    }
+    return url;
+  }catch(e){ return ''; }
+}
+</script>
 </body>
 </html>
