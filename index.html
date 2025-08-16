@@ -3,44 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mes EXIT – Suivi</title>
-
-  <!-- PWA -->
+  <title>Mes EXIT – Liste</title>
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#1e1e22" />
-  <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mes EXIT">
-  <!-- Si tu ajoutes /icons/apple-touch-icon.png (180x180), garde la ligne ci-dessous -->
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="container">
     <h1>Mes EXIT</h1>
-    <p class="subtitle">PWA hors-ligne avec images des boîtes + difficulté. Ajoute-la à l’écran d’accueil (Safari → Partager → “Sur l’écran d’accueil”).</p>
-
-    <div class="controls">
-      <input id="search" type="search" placeholder="Rechercher un titre…" aria-label="Rechercher un titre" />
-      <div class="filters" role="group" aria-label="Filtrer par difficulté">
-        <button class="chip active" data-diff="all">Tout</button>
-        <button class="chip" data-diff="Débutant">Débutant</button>
-        <button class="chip" data-diff="Confirmé">Confirmé</button>
-        <button class="chip" data-diff="Expert">Expert</button>
-      </div>
-      <div class="tools">
-        <button id="importBtn">Importer (JSON)</button>
-        <button id="exportBtn" title="Exporter l'état (les jeux cochés)">Exporter mon état</button>
-        <button id="installBtn" class="ghost" hidden>Installer</button>
-        <input id="fileInput" type="file" accept="application/json" hidden />
-      </div>
-    </div>
-
-    <div class="ios-tip" id="iosTip" hidden>
-      <strong>Astuce iPhone :</strong> touche <span class="share">Partager</span> puis <em>“Sur l’écran d’accueil”</em> pour installer.
-    </div>
+    <p class="subtitle">Liste complète (hors-ligne). Coche ceux que tu as terminés.</p>
 
     <div class="stats" aria-live="polite">
       <span id="totalCount">0</span> jeux •
@@ -57,8 +31,10 @@
           <input type="checkbox" class="doneToggle" />
           <div class="content">
             <img class="cover" alt="" loading="lazy"/>
-            <div class="title"></div>
-            <div class="meta"></div>
+            <div>
+              <div class="title"></div>
+              <div class="meta"></div>
+            </div>
           </div>
         </label>
       </li>
@@ -66,11 +42,8 @@
   </main>
 
   <footer class="container foot">
-    <small>
-      Hors-ligne activé. Pour mettre à jour la liste officielle, remplace <code>data/games.json</code> ou utilise “Importer”.
-    </small>
+    <small>Hors-ligne activé. La liste essaie d’abord <code>data/games.json</code>, puis bascule sur une liste intégrée si besoin.</small>
   </footer>
-  
 
   <script src="app.js"></script>
 </body>
