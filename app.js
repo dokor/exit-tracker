@@ -1,102 +1,56 @@
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.3.0';        // <- bump version pour SW
 const SW_PATH = 'sw.js';
-const STORAGE_KEYS = {
-  DONE: 'exit_done_v1',
-  GAMES_OVERRIDE: 'exit_games_override_v1',
-  IMG_CACHE: 'exit_img_cache_v1'
-};
 const DATA_URL = 'data/games.json';
 
+const STORAGE_KEYS = { DONE:'exit_done_v1', IMG_CACHE:'exit_img_cache_v1' };
 let masterGames = [];
-let currentFilter = 'all';
-let query = '';
 let done = loadJSON(STORAGE_KEYS.DONE, {});
 let imgCache = loadJSON(STORAGE_KEYS.IMG_CACHE, {});
 
 document.addEventListener('DOMContentLoaded', async () => {
-  attachUI();
+  setupPWA();
   await loadGames();
   render();
-  setupPWA();
 });
 
 function setupPWA() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(SW_PATH).catch(console.error);
   }
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  const iosTip = document.getElementById('iosTip');
-  if (isIOS && !isStandalone) iosTip.hidden = false;
-
-  let deferredPrompt;
-  const installBtn = document.getElementById('installBtn');
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.hidden = false;
-  });
-  installBtn?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.hidden = true;
-  });
 }
 
-function loadJSON(key, fallback) {
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-  catch { return fallback; }
-}
-function saveJSON(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
+function loadJSON(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback }catch{ return fallback } }
+function saveJSON(k,v){ localStorage.setItem(k, JSON.stringify(v)) }
 
-function attachUI() {
-  const search = document.getElementById('search');
-  search.addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render(); });
-
-  document.querySelectorAll('.chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.diff;
-      render();
-    });
-  });
-
-  const fileInput = document.getElementById('fileInput');
-  document.getElementById('importBtn').addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', onImportFile);
-
-  document.getElementById('exportBtn').addEventListener('click', onExportState);
+async function loadGames(){
+  // 1) essaie de charger data/games.json
+  try{
+    const res = await fetch(DATA_URL + '?v=' + APP_VERSION, {cache:'no-store'});
+    if (!res.ok) throw new Error('fetch fail');
+    masterGames = await res.json();
+    return;
+  }catch(e){
+    console.warn('Impossible de charger data/games.json, passage au fallback intégré.', e);
+  }
+  // 2) fallback intégré : toujours visible même si fetch rate
+  masterGames = GAMES_FALLBACK;
 }
 
-async function loadGames() {
-  const builtIn = await fetch(DATA_URL, {cache:'no-store'}).then(r => r.json()).catch(() => []);
-  const override = loadJSON(STORAGE_KEYS.GAMES_OVERRIDE, null);
-  masterGames = Array.isArray(override) && override.length ? override : builtIn;
-  const ids = new Set(masterGames.map(g => g.id));
-  Object.keys(done).forEach(id => { if (!ids.has(id)) delete done[id]; });
-  saveJSON(STORAGE_KEYS.DONE, done);
-}
-
-function render() {
+// ------- Rendu (liste complète, sans recherche/filtre) -------
+function render(){
   const list = document.getElementById('gameList');
   const tpl = document.getElementById('gameItemTpl');
   list.innerHTML = '';
 
-  const visible = masterGames
-    .filter(byFilter)
-    .filter(byQuery)
-    .sort(sortByDifficultyThenTitle);
+  const visible = masterGames.slice().sort((a,b)=>{
+    // tri par année desc, puis titre
+    const ya = a.annee ?? 0, yb = b.annee ?? 0;
+    if (yb !== ya) return yb - ya;
+    return a.titre.localeCompare(b.titre, 'fr');
+  });
 
-  for (const g of visible) {
+  for (const g of visible){
     const node = tpl.content.cloneNode(true);
-    const li = node.querySelector('li');
-    li.dataset.id = g.id;
-
     const checkbox = node.querySelector('.doneToggle');
     checkbox.checked = !!done[g.id];
     checkbox.addEventListener('change', () => {
@@ -108,10 +62,10 @@ function render() {
 
     node.querySelector('.title').textContent = g.titre;
     node.querySelector('.meta').innerHTML = [
-      `<span class="badge">${g.difficulte ?? '—'}</span>`,
+      g.difficulte ? `<span class="badge">${g.difficulte}</span>` : '',
       g.annee ? `• ${g.annee}` : '',
       g.editeur ? `• ${escapeHTML(g.editeur)}` : ''
-    ].join(' ');
+    ].filter(Boolean).join(' ');
 
     const imgEl = node.querySelector('.cover');
     resolveCover(g).then(src => { if (src) imgEl.src = src; imgEl.alt = g.titre; });
@@ -123,74 +77,17 @@ function render() {
   updateStats(visible.length);
 }
 
-function byFilter(g) {
-  return currentFilter === 'all' ? true : (g.difficulte === currentFilter);
-}
-function byQuery(g) {
-  if (!query) return true;
-  return g.titre.toLowerCase().includes(query);
-}
-function sortByDifficultyThenTitle(a, b) {
-  const order = { 'Débutant': 0, 'Confirmé': 1, 'Expert': 2 };
-  const da = order[a.difficulte] ?? 99;
-  const db = order[b.difficulte] ?? 99;
-  if (da !== db) return da - db;
-  return a.titre.localeCompare(b.titre, 'fr');
-}
-
-function updateStats(visibleCount = null) {
+function updateStats(){
   const total = masterGames.length;
   const doneCount = Object.keys(done).length;
-  const visible = visibleCount ?? total;
+  const pct = total ? Math.round(doneCount/total*100) : 0;
   document.getElementById('totalCount').textContent = total;
   document.getElementById('doneCount').textContent = doneCount;
-  const pct = total ? Math.round((doneCount / total) * 100) : 0;
   document.getElementById('progressPct').textContent = `${pct}%`;
 }
 
-function escapeHTML(s){ return s?.replace?.(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m])) ?? s; }
+function escapeHTML(s){ return s?.replace?.(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[m])) ?? s; }
 
-async function onImportFile(e) {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  try {
-    const text = await file.text();
-    const incoming = JSON.parse(text);
-    if (!Array.isArray(incoming)) throw new Error('Format JSON invalide: attendu un tableau.');
-    const map = new Map(masterGames.map(g => [g.id, g]));
-    for (const g of incoming) {
-      if (!g.id || !g.titre) continue;
-      map.set(g.id, { ...map.get(g.id), ...g });
-    }
-    const merged = Array.from(map.values());
-    localStorage.setItem(STORAGE_KEYS.GAMES_OVERRIDE, JSON.stringify(merged));
-    masterGames = merged;
-    render();
-    alert('Liste importée avec succès ✅');
-  } catch (err) {
-    console.error(err);
-    alert('Échec de l’import. Vérifie le fichier JSON.');
-  } finally {
-    e.target.value = '';
-  }
-}
-
-function onExportState() {
-  const payload = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    done
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'exit-mon-etat.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// Images: si g.image absent, on tente og:image de la page IELLO via proxy r.jina.ai (évite CORS)
 async function resolveCover(g){
   if (g.image) return g.image;
   if (!g.imagePage) return '';
@@ -206,5 +103,28 @@ async function resolveCover(g){
       saveJSON(STORAGE_KEYS.IMG_CACHE, imgCache);
     }
     return url;
-  }catch(e){ console.warn('img fetch failed', e); return ''; }
+  }catch(e){ return '' }
 }
+
+// ------- Fallback embarqué (extrait) -------
+const GAMES_FALLBACK = [
+  { "id":"exit-intrigue-a-venise", "titre":"EXIT – Intrigue à Venise", "annee":2025, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-intrigue-a-venise/" },
+  { "id":"exit-course-poursuite-a-amsterdam", "titre":"EXIT – Course Poursuite à Amsterdam", "annee":2025, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-course-poursuite-a-amsterdam/" },
+  { "id":"exit-lacademie-de-magie", "titre":"EXIT – L’Académie de Magie", "annee":2024, "difficulte":"Débutant", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-lacademie-de-magie/" },
+  { "id":"exit-levasion-de-prison", "titre":"EXIT – L’évasion de Prison", "annee":2024, "difficulte":"Expert", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-levasion-de-prison/" },
+  { "id":"exit-lheritage-du-voyageur", "titre":"EXIT – L’héritage du Voyageur", "annee":2024, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-lheritage-du-voyageur/" },
+  { "id":"exit-la-disparition-de-sherlock-holmes", "titre":"EXIT – La disparition de Sherlock Holmes", "annee":2023, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-la-disparition-de-sherlock-holmes/" },
+  { "id":"exit-le-bandit-de-fortune-city", "titre":"EXIT – Le Bandit de Fortune City", "annee":2023, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-bandit-de-fortune-city/" },
+  { "id":"exit-le-retour-a-la-cabane-abandonnee", "titre":"EXIT – Le Retour à la Cabane Abandonnée", "annee":2023, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-retour-a-la-cabane-abandonnee/" },
+  { "id":"exit-perils-en-terres-du-milieu", "titre":"EXIT – Périls en Terres du Milieu", "annee":2022, "difficulte":"Débutant", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-perils-en-terres-du-milieu/" },
+  { "id":"exit-le-cimetiere-des-ombres", "titre":"EXIT – Le Cimetière des Ombres", "annee":2022, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-cimetiere-des-ombres/" },
+  { "id":"exit-la-porte-entre-les-mondes", "titre":"EXIT – La Porte entre les Mondes", "annee":2022, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-la-porte-entre-les-mondes/" },
+  { "id":"exit-le-jeu-le-manoir-sinistre", "titre":"EXIT : Le Jeu – Le Manoir Sinistre", "annee":2019, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-le-manoir-sinistre/" },
+  { "id":"exit-le-jeu-le-musee-mysterieux", "titre":"EXIT : Le Jeu – Le Musée Mystérieux", "annee":2019, "difficulte":"Débutant", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-le-musee-mysterieux/" },
+  { "id":"exit-le-tresor-englouti", "titre":"EXIT – Le Trésor Englouti", "annee":2018, "difficulte":"Débutant", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-tresor-englouti/" },
+  { "id":"exit-le-jeu-le-chateau-interdit", "titre":"EXIT : Le Jeu – Le Château Interdit", "annee":2018, "difficulte":"Expert", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-le-chateau-interdit/" },
+  { "id":"exit-le-jeu-la-station-polaire", "titre":"EXIT : Le Jeu – La Station Polaire", "annee":2018, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-la-station-polaire/" },
+  { "id":"exit-le-jeu-le-laboratoire-secret", "titre":"EXIT : Le Jeu – Le Laboratoire Secret", "annee":2017, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-le-laboratoire-secret/" },
+  { "id":"exit-le-jeu-le-tombeau-du-pharaon", "titre":"EXIT : Le Jeu – Le Tombeau du Pharaon", "annee":2017, "difficulte":"Expert", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-le-tombeau-du-pharaon/" },
+  { "id":"exit-le-jeu-la-cabane-abandonnee", "titre":"EXIT : Le Jeu – La Cabane Abandonnée", "annee":2017, "difficulte":"Confirmé", "editeur":"IELLO", "imagePage":"iello.fr/jeux/exit-le-jeu-la-cabane-abandonnee/" }
+];
