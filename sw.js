@@ -1,7 +1,7 @@
-const CACHE_VERSION = 'v1.3.0';   // <- bump pour invalider l'ancien cache
+const CACHE_VERSION = 'v1.4.0';
 const CACHE_NAME = 'exit-cache-' + CACHE_VERSION;
 const ASSETS = [
-  './','./index.html','./style.css','./app.js','./manifest.webmanifest','./data/games.json'
+  './','./index.html','./style.css','./app.js','./manifest.webmanifest'
 ];
 
 self.addEventListener('install', (e) => {
@@ -15,17 +15,6 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
-  if (url.pathname.endsWith('.json')) {
-    e.respondWith(
-      fetch(e.request).then(r => {
-        const clone = r.clone();
-        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-        return r;
-      }).catch(() => caches.match(e.request))
-    );
-    return;
-  }
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).then(r => {
       const clone = r.clone();
