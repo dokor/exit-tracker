@@ -1,0 +1,11 @@
+{
+  "name": "Mes EXIT – Suivi",
+  "short_name": "Mes EXIT",
+  "description": "Coche les EXIT déjà joués. PWA hors-ligne, avec images et difficultés.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1e1e22",
+  "theme_color": "#1e1e22",
+  "icons": []
+}
