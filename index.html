@@ -17,16 +17,13 @@
     .subtitle{color:var(--muted);margin:0 0 8px}
     .sync{font-size:13px;color:#13b36b}
 
-    /* Filtres */
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 0}
     .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--chip);cursor:pointer}
     .chip.active{background:var(--chip-active);border-color:#bfdbfe}
 
-    /* Stats */
     .stats{color:var(--muted);display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
     .stat-pill{background:#eef2f7;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 
-    /* Grille */
     .grid{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:8px}
 
@@ -36,20 +33,18 @@
     .toggle{display:inline-flex;align-items:center;gap:6px;background:#f7f9fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
     .toggle input{transform:scale(1.1)}
 
-    /* Badges difficulté */
     .badge{padding:2px 8px;border-radius:999px;font-size:13px;margin-right:6px;border:1px solid var(--line)}
     .badge.debutant{background:#e6f8e9;color:#20752b;border-color:#bde5c3}
     .badge.confirme{background:#e6f1fb;color:#19528b;border-color:#b8d0ef}
     .badge.expert{background:#fde8e6;color:#a32216;border-color:#f7bbb4}
 
-    /* Images */
     .cover{
       width:100%;
       border-radius:10px;
       border:1px solid var(--line);
       background:#f6f7f9;
       aspect-ratio: 1 / 1;
-      min-height: 225px;   /* demandé */
+      min-height: 225px;
       object-fit: cover;
     }
 
@@ -62,7 +57,6 @@
     <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Liste partagée (un seul espace commun).</p>
     <div class="sync" id="syncState">Connexion…</div>
 
-    <!-- Filtres difficulté -->
     <div class="controls" role="group" aria-label="Filtrer par difficulté">
       <button class="chip active" data-diff="all">Tout</button>
       <button class="chip" data-diff="Débutant">Débutant</button>
@@ -70,7 +64,6 @@
       <button class="chip" data-diff="Expert">Expert</button>
     </div>
 
-    <!-- Stats -->
     <div class="stats" aria-live="polite">
       <span class="stat-pill"><strong id="totalCount">0</strong> jeux</span>
       <span class="stat-pill"><strong id="ownedCount">0</strong> achetés (<span id="ownedPct">0%</span>)</span>
@@ -101,15 +94,14 @@
   </main>
 
   <footer class="container foot">
-    <small>Les états Acheté/Réalisé sont synchronisés en temps réel via Firestore. Les images sont mises en cache localement.</small>
+    <small>Images détectées depuis iello.fr (og:image ou meilleure balise &lt;img&gt;), mises en cache localement. États Acheté/Réalisé partagés via Firestore.</small>
   </footer>
 
-  <!-- Firebase (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // === CONFIG PUBLIQUE (OK côté client) ===
+    // --- Config Firebase (publique) ---
     const firebaseConfig = {
       apiKey: "AIzaSyDsqe2N9vdgX31W_NPwQTwe-fXbG2i6KVQ",
       authDomain: "exit-tracker-3b833.firebaseapp.com",
@@ -119,18 +111,13 @@
       appId: "1:398468746425:web:5decb0342cf0372d4cdf68"
     };
 
-    // === Initialisation ===
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
+    const LIST_ID = "main";
 
-    // === Un seul espace partagé ===
-    const LIST_ID = "main"; // <— c’est le seul doc qu’on utilise
-
-    // État local (images seulement)
-    const IMG_CACHE_KEY = 'exit_img_cache_v1';
+    const IMG_CACHE_KEY = 'exit_img_cache_v2'; // <- v2 pour repartir propre si besoin
     let imgCache = JSON.parse(localStorage.getItem(IMG_CACHE_KEY) || '{}');
 
-    // UI filtres
     const toBadgeClass = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     let currentFilter = 'all';
     document.querySelectorAll('.chip').forEach(btn=>{
@@ -142,7 +129,7 @@
       });
     });
 
-    // Jeux
+    // Données (image vide si inconnue)
     const GAMES = [
       {"id":"exit-intrigue-a-venise","titre":"EXIT – Intrigue à Venise","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"},
       {"id":"exit-course-poursuite-a-amsterdam","titre":"EXIT – Course Poursuite à Amsterdam","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/12/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light_FR-740x1085.jpg"},
@@ -178,10 +165,8 @@
       {"id":"exit-le-jeu-la-cabane-abandonnee","titre":"EXIT : Le Jeu – La Cabane Abandonnée","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","image":""}
     ];
 
-    // Statuts partagés (remplis par Firestore en temps réel)
-    let statuses = {}; // { [gameId]: { owned:boolean, done:boolean } }
-
-    // Abonnement temps réel
+    // --- Firestore temps réel (un seul espace partagé) ---
+    let statuses = {};
     const colRef = collection(db, 'lists', LIST_ID, 'statuses');
     onSnapshot(colRef, (snap)=>{
       const next = {};
@@ -194,7 +179,12 @@
       document.getElementById('syncState').textContent = 'Erreur de connexion';
     });
 
-    document.addEventListener('DOMContentLoaded', render);
+    // --- Rendu & interactions ---
+    document.addEventListener('DOMContentLoaded', () => {
+      render();
+      // précharge les images manquantes en arrière-plan
+      warmUpImages();
+    });
 
     function render(){
       const list = document.getElementById('gameList');
@@ -208,7 +198,7 @@
       for (const g of filtered){
         const node = tpl.content.cloneNode(true);
 
-        // Image : directe si connue, sinon auto via fiche et cache local
+        // --- Image (cache -> directe -> fetch HTML) ---
         const img = node.querySelector('.cover');
         img.alt = g.titre;
         const cached = imgCache[g.id];
@@ -216,12 +206,12 @@
           img.src = cached;
         } else if (g.image) {
           img.src = g.image;
-          img.addEventListener('error', () => fetchAndCacheOgImage(g, img), { once:true });
+          img.addEventListener('error', () => fetchAndCacheImageFromPage(g, img), { once:true });
         } else {
-          fetchAndCacheOgImage(g, img);
+          fetchAndCacheImageFromPage(g, img);
         }
 
-        // Titre + badge + méta
+        // --- Titre + badges ---
         node.querySelector('.title').textContent = g.titre;
         const cls = g.difficulte ? toBadgeClass(g.difficulte) : '';
         node.querySelector('.meta').innerHTML =
@@ -229,13 +219,12 @@
           (g.annee ? ` • ${g.annee}` : '') +
           (g.editeur ? ` • ${g.editeur}` : '');
 
-        // États (depuis Firestore)
+        // --- États partagés ---
         const ownCb  = node.querySelector('.ownToggle');
         const doneCb = node.querySelector('.doneToggle');
         ownCb.checked  = !!(statuses[g.id]?.owned);
         doneCb.checked = !!(statuses[g.id]?.done);
 
-        // Sauvegardes
         ownCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
         doneCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
 
@@ -246,35 +235,102 @@
       list.setAttribute('aria-busy','false');
     }
 
-    // Sauvegarde/merge d’un statut Firestore
     async function saveStatus(gameId, data){
       await setDoc(doc(db, 'lists', LIST_ID, 'statuses', gameId), { ...data, updatedAt: serverTimestamp() }, { merge:true });
-      // l'UI se met à jour via onSnapshot
     }
 
-    // Récupère og:image depuis https://iello.fr/jeux/<id>/ via proxy texte, normalise et met en cache
-    async function fetchAndCacheOgImage(g, imgEl){
+    // --- Récup image depuis HTML de la fiche IELLO (robuste) ---
+    async function fetchAndCacheImageFromPage(g, imgEl){
       try{
         const pageUrl = 'https://iello.fr/jeux/' + g.id + '/';
-        const proxied = 'https://r.jina.ai/' + pageUrl.replace(/^https?:\/\//,'');
-        const html = await fetch(proxied, {cache:'no-store'}).then(r=>r.text());
+        // Proxy texte pour éviter CORS ; on teste plusieurs variantes http/https (certains proxys n'aiment pas les redirs)
+        const candidates = [
+          'https://r.jina.ai/http://iello.fr/jeux/' + g.id + '/',
+          'https://r.jina.ai/https://iello.fr/jeux/' + g.id + '/'
+        ];
+        let html = '';
+        for (const u of candidates){
+          try{ html = await fetch(u, {cache:'no-store'}).then(r=>r.text()); if (html && html.length>200) break; }catch{}
+        }
+        if (!html) return;
 
-        let m = html.match(/<meta[^>]+property=["']og:image:secure_url["'][^>]+content=["']([^"']+)["']/i);
-        let url = m?.[1];
-        if (!url){ m = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i); url = m?.[1]; }
-        if (!url){ m = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i); url = m?.[1]; }
+        // 1) og:image (secure -> normal -> twitter)
+        let url = pickOgImage(html);
+
+        // 2) sinon on scanne toutes les <img> et on choisit la meilleure
+        if (!url) url = pickBestImageFromImgs(html, g.titre);
 
         if (!url) return;
+
+        // normalisation
         url = url.replace(/&amp;|&#038;/g,'&');
         if (url.startsWith('//')) url = 'https:' + url;
         if (!/^https?:\/\//i.test(url)){
           url = new URL(url.startsWith('/')? url : ('/'+url), 'https://iello.fr').toString();
         }
 
+        // mémorise + applique
         imgCache[g.id] = url;
         localStorage.setItem(IMG_CACHE_KEY, JSON.stringify(imgCache));
         if (imgEl) imgEl.src = url;
       }catch(e){ /* silencieux */ }
+    }
+
+    function pickOgImage(html){
+      // og:image:secure_url ou og:image ou twitter:image
+      const re = (name)=> new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]+content=["']([^"']+)["']`,'i');
+      return (html.match(re('og:image:secure_url'))?.[1]
+       ||  html.match(re('og:image'))?.[1]
+       ||  html.match(re('twitter:image'))?.[1]
+      ) || '';
+    }
+
+    function pickBestImageFromImgs(html, title){
+      // récupère toutes les balises <img ... src="...">
+      const srcs = Array.from(html.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/ig)).map(m=>m[1]);
+
+      // On garde uniquement les médias WordPress ou images iello, on ignore les icônes/avatars
+      let candidates = srcs.filter(s=>{
+        if (!/\.(png|jpe?g|webp)(\?|$)/i.test(s)) return false;
+        const lower = s.toLowerCase();
+        // éviter les tout petits thumbs (150x150, 300x300, etc.)
+        if (/-\d{2,4}x\d{2,4}\.(png|jpe?g|webp)$/i.test(lower)){
+          // On élimine les tailles < 400px dans un des côtés
+          const m = lower.match(/-(\d{2,4})x(\d{2,4})\.(png|jpe?g|webp)$/i);
+          const w = parseInt(m?.[1]||'0',10), h = parseInt(m?.[2]||'0',10);
+          if (Math.max(w,h) < 400) return false;
+        }
+        // préférer images "Mockup", "box", "exit-" etc.
+        return /iello\.fr\/wp-content\/uploads\//.test(lower) || /iellogames\.com/.test(lower);
+      });
+
+      // Heuristique de scoring
+      const score = (u)=>{
+        const l = u.toLowerCase();
+        let s = 0;
+        if (/mockup|box|pack|cover/.test(l)) s += 5;
+        if (/-\d{3,4}x\d{3,4}\./.test(l)) s += 3;           // grandes tailles
+        if (/740x1085|1085x/.test(l)) s += 4;               // mockups verticaux
+        if (/600x600/.test(l)) s += 2;                      // carré correct
+        if (/exit/.test(l)) s += 1;
+        // léger bonus si le titre (sans accents) apparaît
+        const norm = (x)=> x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+        if (norm(l).includes(norm(title).slice(0,8))) s += 1;
+        return s;
+      };
+
+      candidates.sort((a,b)=> score(b)-score(a));
+      return candidates[0] || '';
+    }
+
+    async function warmUpImages(){
+      // déclenche la découverte d'image pour les boîtes sans cache ni URL directe
+      const tasks = GAMES.filter(g => !imgCache[g.id] && !g.image)
+        .map(g => fetchAndCacheImageFromPage(g, null));
+      // on ne bloque pas le rendu ; c’est un “best effort”
+      try{ await Promise.allSettled(tasks); }catch{}
+      // re-render pour afficher celles qui auraient été trouvées
+      render();
     }
 
     function updateStats(){
