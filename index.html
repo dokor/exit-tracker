@@ -3,30 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mes EXIT (partagé)</title>
+  <title>Mes EXIT – Liste partagée</title>
   <style>
     :root{
       --fg:#1e1e22; --muted:#666; --bg:#fafafa; --card:#fff; --line:#e8e8ee;
       --radius:14px; --shadow:0 6px 20px rgba(0,0,0,.06);
       --chip:#f0f3f7; --chip-active:#dbeafe;
-      --ok:#13b36b; --warn:#b38713;
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial}
     .container{max-width:960px;margin:0 auto;padding:20px}
     h1{margin:.2em 0 4px;font-size:32px}
-    .subtitle{color:var(--muted);margin:0}
-
-    /* Partage */
-    .share{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
-    .share-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .input{flex:1;min-width:220px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
-    .btn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#f6f7fb;cursor:pointer}
-    .btn.primary{background:#2563eb;color:#fff;border-color:#1d4ed8}
-    .hint{color:var(--muted);font-size:13px}
-    .sync{font-size:13px}
-    .sync.ok{color:var(--ok)}
-    .sync.warn{color:var(--warn)}
+    .subtitle{color:var(--muted);margin:0 0 8px}
+    .sync{font-size:13px;color:#13b36b}
 
     /* Filtres */
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 0}
@@ -70,20 +59,8 @@
 <body>
   <header class="container">
     <h1>Mes EXIT</h1>
-    <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Filtre par difficulté, et synchronisation via un code partagé.</p>
-
-    <!-- Zone de partage -->
-    <section class="share" aria-labelledby="shareTitle">
-      <strong id="shareTitle">Liste partagée</strong>
-      <div class="share-row">
-        <input id="listCodeInput" class="input" placeholder="Code (16+ caractères, ex. X8H3...)" inputmode="latin" />
-        <button id="genBtn" class="btn">Générer</button>
-        <button id="saveBtn" class="btn primary">Activer</button>
-        <button id="copyBtn" class="btn">Copier le lien</button>
-        <span id="syncState" class="sync warn">Hors ligne / non connecté</span>
-      </div>
-      <div class="hint">Partage le code (ou l’URL) avec ta copine. Toute personne qui utilise ce code verra et mettra à jour la même liste.</div>
-    </section>
+    <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Liste partagée (un seul espace commun).</p>
+    <div class="sync" id="syncState">Connexion…</div>
 
     <!-- Filtres difficulté -->
     <div class="controls" role="group" aria-label="Filtrer par difficulté">
@@ -124,32 +101,36 @@
   </main>
 
   <footer class="container foot">
-    <small>Les images manquantes sont récupérées depuis la fiche officielle IELLO et mémorisées localement. Les états Acheté/Réalisé sont synchronisés via Firestore.</small>
+    <small>Les états Acheté/Réalisé sont synchronisés en temps réel via Firestore. Les images sont mises en cache localement.</small>
   </footer>
 
-  <!-- Firebase SDK (modules) -->
+  <!-- Firebase (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 1) COLLE ICI TA CONFIG FIREBASE (Project settings > General > Your apps > Web app)
+    // === CONFIG PUBLIQUE (OK côté client) ===
     const firebaseConfig = {
-  apiKey: "AIzaSyDsqe2N9vdgX31W_NPwQTwe-fXbG2i6KVQ",
-  authDomain: "exit-tracker-3b833.firebaseapp.com",
-  projectId: "exit-tracker-3b833",
-  storageBucket: "exit-tracker-3b833.firebasestorage.app",
-  messagingSenderId: "398468746425",
-  appId: "1:398468746425:web:5decb0342cf0372d4cdf68"
+      apiKey: "AIzaSyDsqe2N9vdgX31W_NPwQTwe-fXbG2i6KVQ",
+      authDomain: "exit-tracker-3b833.firebaseapp.com",
+      projectId: "exit-tracker-3b833",
+      storageBucket: "exit-tracker-3b833.firebasestorage.app",
+      messagingSenderId: "398468746425",
+      appId: "1:398468746425:web:5decb0342cf0372d4cdf68"
     };
 
-    // 2) Initialisation
+    // === Initialisation ===
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
-    // ----- État local -----
-    const STORAGE_KEYS = { IMG:'exit_img_cache_v1' };  // (on ne stocke plus OWN/DONE localement, tout va dans Firestore)
-    let imgCache = JSON.parse(localStorage.getItem(STORAGE_KEYS.IMG) || '{}');
+    // === Un seul espace partagé ===
+    const LIST_ID = "main"; // <— c’est le seul doc qu’on utilise
 
+    // État local (images seulement)
+    const IMG_CACHE_KEY = 'exit_img_cache_v1';
+    let imgCache = JSON.parse(localStorage.getItem(IMG_CACHE_KEY) || '{}');
+
+    // UI filtres
     const toBadgeClass = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     let currentFilter = 'all';
     document.querySelectorAll('.chip').forEach(btn=>{
@@ -161,71 +142,7 @@
       });
     });
 
-    // ---- Gestion du code de liste partagé ----
-    const codeInput = document.getElementById('listCodeInput');
-    const genBtn   = document.getElementById('genBtn');
-    const saveBtn  = document.getElementById('saveBtn');
-    const copyBtn  = document.getElementById('copyBtn');
-    const syncEl   = document.getElementById('syncState');
-
-    let listCode = new URL(location.href).searchParams.get('list') || localStorage.getItem('exit_list_code') || '';
-    if (listCode) codeInput.value = listCode;
-
-    // Générer un code fort
-    genBtn.addEventListener('click', ()=>{
-      codeInput.value = genCode(24);
-    });
-    function genCode(n){
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-      let s=''; for(let i=0;i<n;i++) s += chars[Math.floor(Math.random()*chars.length)];
-      return s;
-    }
-
-    // Activer le code (sauvegarde + création du doc racine si besoin)
-    saveBtn.addEventListener('click', async ()=>{
-      const code = (codeInput.value||'').trim();
-      if (!/^[A-Za-z0-9_-]{16,}$/.test(code)) { alert('Choisis un code d’au moins 16 caractères.'); return; }
-      listCode = code;
-      localStorage.setItem('exit_list_code', listCode);
-      history.replaceState({}, '', location.pathname + '?list=' + encodeURIComponent(listCode));
-      // crée le doc racine si absent (facultatif)
-      await setDoc(doc(db, 'lists', listCode), { createdAt: serverTimestamp() }, { merge:true });
-      subscribe(); // (ré)abonne le temps réel
-    });
-
-    // Copier le lien
-    copyBtn.addEventListener('click', async ()=>{
-      if (!listCode) { alert('Active un code d’abord.'); return; }
-      const url = location.origin + location.pathname + '?list=' + encodeURIComponent(listCode);
-      try { await navigator.clipboard.writeText(url); copyBtn.textContent='Copié ✅'; setTimeout(()=>copyBtn.textContent='Copier le lien',1200); }
-      catch { alert(url); }
-    });
-
-    // Abonnement temps réel aux statuts de la liste
-    let unsub = null;
-    let remoteStatuses = {}; // { [gameId]: {owned:boolean, done:boolean} }
-    async function subscribe(){
-      if (!listCode){ syncEl.textContent='Hors ligne / non connecté'; syncEl.className='sync warn'; return; }
-      if (unsub) { unsub(); unsub=null; }
-      syncEl.textContent='Connexion…'; syncEl.className='sync warn';
-      const colRef = collection(db, 'lists', listCode, 'statuses');
-      // snapshot en temps réel
-      unsub = onSnapshot(colRef, (snap)=>{
-        const next = {};
-        snap.forEach(docu => { next[docu.id] = docu.data(); });
-        remoteStatuses = next;
-        syncEl.textContent='Connecté (temps réel)'; syncEl.className='sync ok';
-        render();
-      }, (err)=>{
-        console.error(err);
-        syncEl.textContent='Erreur de connexion'; syncEl.className='sync warn';
-      });
-    }
-
-    // Lance l’abonnement si un code est présent au chargement
-    if (listCode){ subscribe(); }
-
-    // ---- Données jeux (une seule propriété image; vide si inconnue) ----
+    // Jeux
     const GAMES = [
       {"id":"exit-intrigue-a-venise","titre":"EXIT – Intrigue à Venise","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"},
       {"id":"exit-course-poursuite-a-amsterdam","titre":"EXIT – Course Poursuite à Amsterdam","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/12/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light_FR-740x1085.jpg"},
@@ -261,14 +178,28 @@
       {"id":"exit-le-jeu-la-cabane-abandonnee","titre":"EXIT : Le Jeu – La Cabane Abandonnée","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","image":""}
     ];
 
-    // ---------------- Rendu & Sync ----------------
-    async function render(){
+    // Statuts partagés (remplis par Firestore en temps réel)
+    let statuses = {}; // { [gameId]: { owned:boolean, done:boolean } }
+
+    // Abonnement temps réel
+    const colRef = collection(db, 'lists', LIST_ID, 'statuses');
+    onSnapshot(colRef, (snap)=>{
+      const next = {};
+      snap.forEach(docu => { next[docu.id] = docu.data(); });
+      statuses = next;
+      document.getElementById('syncState').textContent = 'Connecté (temps réel)';
+      render();
+    }, (err)=>{
+      console.error(err);
+      document.getElementById('syncState').textContent = 'Erreur de connexion';
+    });
+
+    document.addEventListener('DOMContentLoaded', render);
+
+    function render(){
       const list = document.getElementById('gameList');
       const tpl = document.getElementById('gameItemTpl');
       list.innerHTML = '';
-
-      // récup des statuts en mémoire (issus du snapshot temps réel)
-      const statuses = remoteStatuses;
 
       const filtered = GAMES
         .filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter)
@@ -277,7 +208,7 @@
       for (const g of filtered){
         const node = tpl.content.cloneNode(true);
 
-        // Image (directe, cache, ou récupération auto)
+        // Image : directe si connue, sinon auto via fiche et cache local
         const img = node.querySelector('.cover');
         img.alt = g.titre;
         const cached = imgCache[g.id];
@@ -298,29 +229,27 @@
           (g.annee ? ` • ${g.annee}` : '') +
           (g.editeur ? ` • ${g.editeur}` : '');
 
-        // États depuis Firestore
+        // États (depuis Firestore)
         const ownCb  = node.querySelector('.ownToggle');
         const doneCb = node.querySelector('.doneToggle');
         ownCb.checked  = !!(statuses[g.id]?.owned);
         doneCb.checked = !!(statuses[g.id]?.done);
 
-        // Sauvegardes côté serveur
+        // Sauvegardes
         ownCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
         doneCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
 
         list.appendChild(node);
       }
 
-      list.setAttribute('aria-busy','false');
       updateStats();
+      list.setAttribute('aria-busy','false');
     }
 
-    // Sauvegarde/merge d’un statut dans Firestore
+    // Sauvegarde/merge d’un statut Firestore
     async function saveStatus(gameId, data){
-      if (!listCode){ alert('Active un code de liste pour synchroniser.'); return; }
-      const ref = doc(db, 'lists', listCode, 'statuses', gameId);
-      await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge:true });
-      // Le snapshot temps réel mettra à jour l’UI
+      await setDoc(doc(db, 'lists', LIST_ID, 'statuses', gameId), { ...data, updatedAt: serverTimestamp() }, { merge:true });
+      // l'UI se met à jour via onSnapshot
     }
 
     // Récupère og:image depuis https://iello.fr/jeux/<id>/ via proxy texte, normalise et met en cache
@@ -343,18 +272,19 @@
         }
 
         imgCache[g.id] = url;
-        localStorage.setItem(STORAGE_KEYS.IMG, JSON.stringify(imgCache));
+        localStorage.setItem(IMG_CACHE_KEY, JSON.stringify(imgCache));
         if (imgEl) imgEl.src = url;
       }catch(e){ /* silencieux */ }
     }
 
     function updateStats(){
       const total = GAMES.filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter).length;
-      const statuses = remoteStatuses;
+
       const ownCount  = Object.entries(statuses).filter(([id,s])=>{
         const g = GAMES.find(x=>x.id===id);
         return s.owned && (currentFilter==='all' || g?.difficulte===currentFilter);
       }).length;
+
       const doneCount = Object.entries(statuses).filter(([id,s])=>{
         const g = GAMES.find(x=>x.id===id);
         return s.done && (currentFilter==='all' || g?.difficulte===currentFilter);
@@ -366,9 +296,6 @@
       document.getElementById('ownedPct').textContent   = total ? Math.round(ownCount/total*100)+'%' : '0%';
       document.getElementById('donePct').textContent    = total ? Math.round(doneCount/total*100)+'%' : '0%';
     }
-
-    // État partagé reçu du serveur (peuplé par subscribe())
-    let remoteStatuses = {}; // { [gameId]: { owned, done } }
   </script>
 </body>
 </html>
