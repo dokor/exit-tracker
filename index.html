@@ -3,22 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mes EXIT</title>
-
+  <title>Mes EXIT (partagé)</title>
   <style>
     :root{
       --fg:#1e1e22; --muted:#666; --bg:#fafafa; --card:#fff; --line:#e8e8ee;
       --radius:14px; --shadow:0 6px 20px rgba(0,0,0,.06);
       --chip:#f0f3f7; --chip-active:#dbeafe;
+      --ok:#13b36b; --warn:#b38713;
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial}
     .container{max-width:960px;margin:0 auto;padding:20px}
-    h1{margin:.2em 0;font-size:32px}
-    .subtitle{color:var(--muted);margin:0 0 8px}
+    h1{margin:.2em 0 4px;font-size:32px}
+    .subtitle{color:var(--muted);margin:0}
+
+    /* Partage */
+    .share{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
+    .share-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .input{flex:1;min-width:220px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .btn{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#f6f7fb;cursor:pointer}
+    .btn.primary{background:#2563eb;color:#fff;border-color:#1d4ed8}
+    .hint{color:var(--muted);font-size:13px}
+    .sync{font-size:13px}
+    .sync.ok{color:var(--ok)}
+    .sync.warn{color:var(--warn)}
 
     /* Filtres */
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 0}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 0}
     .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--chip);cursor:pointer}
     .chip.active{background:var(--chip-active);border-color:#bfdbfe}
 
@@ -42,14 +53,14 @@
     .badge.confirme{background:#e6f1fb;color:#19528b;border-color:#b8d0ef}
     .badge.expert{background:#fde8e6;color:#a32216;border-color:#f7bbb4}
 
-    /* Images : ratio + hauteur mini (agrandie à 225px) */
+    /* Images */
     .cover{
       width:100%;
       border-radius:10px;
       border:1px solid var(--line);
       background:#f6f7f9;
       aspect-ratio: 1 / 1;
-      min-height: 225px;     /* <- demandé */
+      min-height: 225px;   /* demandé */
       object-fit: cover;
     }
 
@@ -59,8 +70,22 @@
 <body>
   <header class="container">
     <h1>Mes EXIT</h1>
-    <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Filtre par difficulté ci-dessous.</p>
+    <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Filtre par difficulté, et synchronisation via un code partagé.</p>
 
+    <!-- Zone de partage -->
+    <section class="share" aria-labelledby="shareTitle">
+      <strong id="shareTitle">Liste partagée</strong>
+      <div class="share-row">
+        <input id="listCodeInput" class="input" placeholder="Code (16+ caractères, ex. X8H3...)" inputmode="latin" />
+        <button id="genBtn" class="btn">Générer</button>
+        <button id="saveBtn" class="btn primary">Activer</button>
+        <button id="copyBtn" class="btn">Copier le lien</button>
+        <span id="syncState" class="sync warn">Hors ligne / non connecté</span>
+      </div>
+      <div class="hint">Partage le code (ou l’URL) avec ta copine. Toute personne qui utilise ce code verra et mettra à jour la même liste.</div>
+    </section>
+
+    <!-- Filtres difficulté -->
     <div class="controls" role="group" aria-label="Filtrer par difficulté">
       <button class="chip active" data-diff="all">Tout</button>
       <button class="chip" data-diff="Débutant">Débutant</button>
@@ -68,6 +93,7 @@
       <button class="chip" data-diff="Expert">Expert</button>
     </div>
 
+    <!-- Stats -->
     <div class="stats" aria-live="polite">
       <span class="stat-pill"><strong id="totalCount">0</strong> jeux</span>
       <span class="stat-pill"><strong id="ownedCount">0</strong> achetés (<span id="ownedPct">0%</span>)</span>
@@ -98,23 +124,33 @@
   </main>
 
   <footer class="container foot">
-    <small>Les images manquantes sont récupérées depuis la fiche officielle IELLO et mémorisées localement. Tes coches restent sur cet appareil.</small>
+    <small>Les images manquantes sont récupérées depuis la fiche officielle IELLO et mémorisées localement. Les états Acheté/Réalisé sont synchronisés via Firestore.</small>
   </footer>
 
-  <script>
-    const STORAGE_KEYS = {
-      OWN:  'exit_owned_v1',   // nouvel état "Acheté"
-      DONE: 'exit_done_v1',    // état "Réalisé" (conservé)
-      IMG:  'exit_img_cache_v1'
+  <!-- Firebase SDK (modules) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 1) COLLE ICI TA CONFIG FIREBASE (Project settings > General > Your apps > Web app)
+    const firebaseConfig = {
+      apiKey: "REPLACE_ME",
+      authDomain: "REPLACE_ME.firebaseapp.com",
+      projectId: "REPLACE_ME",
+      storageBucket: "REPLACE_ME.appspot.com",
+      messagingSenderId: "REPLACE_ME",
+      appId: "REPLACE_ME"
     };
-    let owned   = JSON.parse(localStorage.getItem(STORAGE_KEYS.OWN)  || '{}');
-    let done    = JSON.parse(localStorage.getItem(STORAGE_KEYS.DONE) || '{}');
-    let imgCache= JSON.parse(localStorage.getItem(STORAGE_KEYS.IMG)  || '{}');
 
-    // util : "Débutant" -> "debutant", "Confirmé" -> "confirme"
+    // 2) Initialisation
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ----- État local -----
+    const STORAGE_KEYS = { IMG:'exit_img_cache_v1' };  // (on ne stocke plus OWN/DONE localement, tout va dans Firestore)
+    let imgCache = JSON.parse(localStorage.getItem(STORAGE_KEYS.IMG) || '{}');
+
     const toBadgeClass = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-
-    // Filtres UI
     let currentFilter = 'all';
     document.querySelectorAll('.chip').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -125,7 +161,71 @@
       });
     });
 
-    // Données — une seule variable `image` (vide si inconnue)
+    // ---- Gestion du code de liste partagé ----
+    const codeInput = document.getElementById('listCodeInput');
+    const genBtn   = document.getElementById('genBtn');
+    const saveBtn  = document.getElementById('saveBtn');
+    const copyBtn  = document.getElementById('copyBtn');
+    const syncEl   = document.getElementById('syncState');
+
+    let listCode = new URL(location.href).searchParams.get('list') || localStorage.getItem('exit_list_code') || '';
+    if (listCode) codeInput.value = listCode;
+
+    // Générer un code fort
+    genBtn.addEventListener('click', ()=>{
+      codeInput.value = genCode(24);
+    });
+    function genCode(n){
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+      let s=''; for(let i=0;i<n;i++) s += chars[Math.floor(Math.random()*chars.length)];
+      return s;
+    }
+
+    // Activer le code (sauvegarde + création du doc racine si besoin)
+    saveBtn.addEventListener('click', async ()=>{
+      const code = (codeInput.value||'').trim();
+      if (!/^[A-Za-z0-9_-]{16,}$/.test(code)) { alert('Choisis un code d’au moins 16 caractères.'); return; }
+      listCode = code;
+      localStorage.setItem('exit_list_code', listCode);
+      history.replaceState({}, '', location.pathname + '?list=' + encodeURIComponent(listCode));
+      // crée le doc racine si absent (facultatif)
+      await setDoc(doc(db, 'lists', listCode), { createdAt: serverTimestamp() }, { merge:true });
+      subscribe(); // (ré)abonne le temps réel
+    });
+
+    // Copier le lien
+    copyBtn.addEventListener('click', async ()=>{
+      if (!listCode) { alert('Active un code d’abord.'); return; }
+      const url = location.origin + location.pathname + '?list=' + encodeURIComponent(listCode);
+      try { await navigator.clipboard.writeText(url); copyBtn.textContent='Copié ✅'; setTimeout(()=>copyBtn.textContent='Copier le lien',1200); }
+      catch { alert(url); }
+    });
+
+    // Abonnement temps réel aux statuts de la liste
+    let unsub = null;
+    let remoteStatuses = {}; // { [gameId]: {owned:boolean, done:boolean} }
+    async function subscribe(){
+      if (!listCode){ syncEl.textContent='Hors ligne / non connecté'; syncEl.className='sync warn'; return; }
+      if (unsub) { unsub(); unsub=null; }
+      syncEl.textContent='Connexion…'; syncEl.className='sync warn';
+      const colRef = collection(db, 'lists', listCode, 'statuses');
+      // snapshot en temps réel
+      unsub = onSnapshot(colRef, (snap)=>{
+        const next = {};
+        snap.forEach(docu => { next[docu.id] = docu.data(); });
+        remoteStatuses = next;
+        syncEl.textContent='Connecté (temps réel)'; syncEl.className='sync ok';
+        render();
+      }, (err)=>{
+        console.error(err);
+        syncEl.textContent='Erreur de connexion'; syncEl.className='sync warn';
+      });
+    }
+
+    // Lance l’abonnement si un code est présent au chargement
+    if (listCode){ subscribe(); }
+
+    // ---- Données jeux (une seule propriété image; vide si inconnue) ----
     const GAMES = [
       {"id":"exit-intrigue-a-venise","titre":"EXIT – Intrigue à Venise","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"},
       {"id":"exit-course-poursuite-a-amsterdam","titre":"EXIT – Course Poursuite à Amsterdam","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/12/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light_FR-740x1085.jpg"},
@@ -161,12 +261,14 @@
       {"id":"exit-le-jeu-la-cabane-abandonnee","titre":"EXIT : Le Jeu – La Cabane Abandonnée","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","image":""}
     ];
 
-    document.addEventListener('DOMContentLoaded', render);
-
-    function render(){
+    // ---------------- Rendu & Sync ----------------
+    async function render(){
       const list = document.getElementById('gameList');
       const tpl = document.getElementById('gameItemTpl');
       list.innerHTML = '';
+
+      // récup des statuts en mémoire (issus du snapshot temps réel)
+      const statuses = remoteStatuses;
 
       const filtered = GAMES
         .filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter)
@@ -196,32 +298,29 @@
           (g.annee ? ` • ${g.annee}` : '') +
           (g.editeur ? ` • ${g.editeur}` : '');
 
-        // Toggles Acheté / Réalisé
+        // États depuis Firestore
         const ownCb  = node.querySelector('.ownToggle');
         const doneCb = node.querySelector('.doneToggle');
+        ownCb.checked  = !!(statuses[g.id]?.owned);
+        doneCb.checked = !!(statuses[g.id]?.done);
 
-        ownCb.checked  = !!owned[g.id];
-        doneCb.checked = !!done[g.id];
-
-        ownCb.addEventListener('change', () => {
-          owned[g.id] = ownCb.checked || undefined;
-          if (!ownCb.checked) delete owned[g.id];
-          localStorage.setItem(STORAGE_KEYS.OWN, JSON.stringify(owned));
-          updateStats();
-        });
-
-        doneCb.addEventListener('change', () => {
-          done[g.id] = doneCb.checked || undefined;
-          if (!doneCb.checked) delete done[g.id];
-          localStorage.setItem(STORAGE_KEYS.DONE, JSON.stringify(done));
-          updateStats();
-        });
+        // Sauvegardes côté serveur
+        ownCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
+        doneCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
 
         list.appendChild(node);
       }
 
       list.setAttribute('aria-busy','false');
       updateStats();
+    }
+
+    // Sauvegarde/merge d’un statut dans Firestore
+    async function saveStatus(gameId, data){
+      if (!listCode){ alert('Active un code de liste pour synchroniser.'); return; }
+      const ref = doc(db, 'lists', listCode, 'statuses', gameId);
+      await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge:true });
+      // Le snapshot temps réel mettra à jour l’UI
     }
 
     // Récupère og:image depuis https://iello.fr/jeux/<id>/ via proxy texte, normalise et met en cache
@@ -245,31 +344,31 @@
 
         imgCache[g.id] = url;
         localStorage.setItem(STORAGE_KEYS.IMG, JSON.stringify(imgCache));
-
         if (imgEl) imgEl.src = url;
       }catch(e){ /* silencieux */ }
     }
 
     function updateStats(){
       const total = GAMES.filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter).length;
-      const ownCount  = Object.keys(owned).filter(id => {
-        const game = GAMES.find(g=>g.id===id);
-        return game && (currentFilter==='all' || game.difficulte===currentFilter);
+      const statuses = remoteStatuses;
+      const ownCount  = Object.entries(statuses).filter(([id,s])=>{
+        const g = GAMES.find(x=>x.id===id);
+        return s.owned && (currentFilter==='all' || g?.difficulte===currentFilter);
       }).length;
-      const doneCount = Object.keys(done).filter(id => {
-        const game = GAMES.find(g=>g.id===id);
-        return game && (currentFilter==='all' || game.difficulte===currentFilter);
+      const doneCount = Object.entries(statuses).filter(([id,s])=>{
+        const g = GAMES.find(x=>x.id===id);
+        return s.done && (currentFilter==='all' || g?.difficulte===currentFilter);
       }).length;
-
-      const ownedPct = total ? Math.round(ownCount/total*100) : 0;
-      const donePct  = total ? Math.round(doneCount/total*100) : 0;
 
       document.getElementById('totalCount').textContent = total;
       document.getElementById('ownedCount').textContent = ownCount;
-      document.getElementById('doneCount').textContent = doneCount;
-      document.getElementById('ownedPct').textContent  = ownedPct + '%';
-      document.getElementById('donePct').textContent   = donePct + '%';
+      document.getElementById('doneCount').textContent  = doneCount;
+      document.getElementById('ownedPct').textContent   = total ? Math.round(ownCount/total*100)+'%' : '0%';
+      document.getElementById('donePct').textContent    = total ? Math.round(doneCount/total*100)+'%' : '0%';
     }
+
+    // État partagé reçu du serveur (peuplé par subscribe())
+    let remoteStatuses = {}; // { [gameId]: { owned, done } }
   </script>
 </body>
 </html>
