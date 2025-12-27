@@ -1,360 +1,682 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mes EXIT – Liste partagée</title>
-  <style>
-    :root{
-      --fg:#1e1e22; --muted:#666; --bg:#fafafa; --card:#fff; --line:#e8e8ee;
-      --radius:14px; --shadow:0 6px 20px rgba(0,0,0,.06);
-      --chip:#f0f3f7; --chip-active:#dbeafe;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .container{max-width:960px;margin:0 auto;padding:20px}
-    h1{margin:.2em 0 4px;font-size:32px}
-    .subtitle{color:var(--muted);margin:0 0 8px}
-    .sync{font-size:13px;color:#13b36b}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+    <title>Mes EXIT – Liste partagée</title>
+    <style>
+        :root {
+            --fg: #1e1e22;
+            --muted: #666;
+            --bg: #fafafa;
+            --card: #fff;
+            --line: #e8e8ee;
+            --radius: 14px;
+            --shadow: 0 6px 20px rgba(0, 0, 0, .06);
+            --chip: #f0f3f7;
+            --chip-active: #dbeafe;
+        }
 
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 0}
-    .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--chip);cursor:pointer}
-    .chip.active{background:var(--chip-active);border-color:#bfdbfe}
+        * {
+            box-sizing: border-box
+        }
 
-    .stats{color:var(--muted);display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-    .stat-pill{background:#eef2f7;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+        html, body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial
+        }
 
-    .grid{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:8px}
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px
+        }
 
-    .title{font-weight:600;margin:0}
-    .meta{font-size:13px;color:var(--muted)}
-    .toggles{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
-    .toggle{display:inline-flex;align-items:center;gap:6px;background:#f7f9fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
-    .toggle input{transform:scale(1.1)}
+        h1 {
+            margin: .2em 0 4px;
+            font-size: 32px
+        }
 
-    .badge{padding:2px 8px;border-radius:999px;font-size:13px;margin-right:6px;border:1px solid var(--line)}
-    .badge.debutant{background:#e6f8e9;color:#20752b;border-color:#bde5c3}
-    .badge.confirme{background:#e6f1fb;color:#19528b;border-color:#b8d0ef}
-    .badge.expert{background:#fde8e6;color:#a32216;border-color:#f7bbb4}
+        .subtitle {
+            color: var(--muted);
+            margin: 0 0 8px
+        }
 
-    .cover{
-      width:100%;
-      border-radius:10px;
-      border:1px solid var(--line);
-      background:#f6f7f9;
-      aspect-ratio: 1 / 1;
-      min-height: 225px;
-      object-fit: cover;
-    }
+        .sync {
+            font-size: 13px;
+            color: #13b36b
+        }
 
-    .foot{padding:6px 0 40px;color:var(--muted)}
-  </style>
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin: 14px 0 0
+        }
+
+        .chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--chip);
+            cursor: pointer
+        }
+
+        .chip.active {
+            background: var(--chip-active);
+            border-color: #bfdbfe
+        }
+
+        .stats {
+            color: var(--muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px
+        }
+
+        .stat-pill {
+            background: #eef2f7;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 4px 10px
+        }
+
+        .grid {
+            list-style: none;
+            padding: 0;
+            margin: 18px 0;
+            display: grid;
+            grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .title {
+            font-weight: 600;
+            margin: 0
+        }
+
+        .meta {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .toggles {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px
+        }
+
+        .toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f7f9fb;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 6px 10px
+        }
+
+        .toggle input {
+            transform: scale(1.1)
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 13px;
+            margin-right: 6px;
+            border: 1px solid var(--line)
+        }
+
+        .badge.debutant {
+            background: #e6f8e9;
+            color: #20752b;
+            border-color: #bde5c3
+        }
+
+        .badge.confirme {
+            background: #e6f1fb;
+            color: #19528b;
+            border-color: #b8d0ef
+        }
+
+        .badge.expert {
+            background: #fde8e6;
+            color: #a32216;
+            border-color: #f7bbb4
+        }
+
+        .cover {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: #f6f7f9;
+            aspect-ratio: 1 / 1;
+            min-height: 225px;
+            object-fit: cover;
+        }
+
+        .foot {
+            padding: 6px 0 40px;
+            color: var(--muted)
+        }
+    </style>
 </head>
 <body>
-  <header class="container">
+<header class="container">
     <h1>Mes EXIT</h1>
     <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Liste partagée (un seul espace commun).</p>
     <div class="sync" id="syncState">Connexion…</div>
 
     <div class="controls" role="group" aria-label="Filtrer par difficulté">
-      <button class="chip active" data-diff="all">Tout</button>
-      <button class="chip" data-diff="Débutant">Débutant</button>
-      <button class="chip" data-diff="Confirmé">Confirmé</button>
-      <button class="chip" data-diff="Expert">Expert</button>
+        <button class="chip active" data-diff="all">Tout</button>
+        <button class="chip" data-diff="Débutant">Débutant</button>
+        <button class="chip" data-diff="Confirmé">Confirmé</button>
+        <button class="chip" data-diff="Expert">Expert</button>
     </div>
 
     <div class="stats" aria-live="polite">
-      <span class="stat-pill"><strong id="totalCount">0</strong> jeux</span>
-      <span class="stat-pill"><strong id="ownedCount">0</strong> achetés (<span id="ownedPct">0%</span>)</span>
-      <span class="stat-pill"><strong id="doneCount">0</strong> réalisés (<span id="donePct">0%</span>)</span>
+        <span class="stat-pill"><strong id="totalCount">0</strong> jeux</span>
+        <span class="stat-pill"><strong id="ownedCount">0</strong> achetés (<span id="ownedPct">0%</span>)</span>
+        <span class="stat-pill"><strong id="doneCount">0</strong> réalisés (<span id="donePct">0%</span>)</span>
     </div>
-  </header>
+</header>
 
-  <main class="container">
+<main class="container">
     <ul id="gameList" class="grid" aria-live="polite" aria-busy="true"></ul>
 
     <template id="gameItemTpl">
-      <li class="card">
-        <img class="cover" alt="" loading="lazy" referrerpolicy="no-referrer" />
-        <h3 class="title"></h3>
-        <div class="meta"></div>
-        <div class="toggles">
-          <label class="toggle">
-            <input type="checkbox" class="ownToggle" />
-            <span>Acheté</span>
-          </label>
-          <label class="toggle">
-            <input type="checkbox" class="doneToggle" />
-            <span>Réalisé</span>
-          </label>
-        </div>
-      </li>
+        <li class="card">
+            <img class="cover" alt="" loading="lazy" referrerpolicy="no-referrer"/>
+            <h3 class="title"></h3>
+            <div class="meta"></div>
+            <div class="toggles">
+                <label class="toggle">
+                    <input type="checkbox" class="ownToggle"/>
+                    <span>Acheté</span>
+                </label>
+                <label class="toggle">
+                    <input type="checkbox" class="doneToggle"/>
+                    <span>Réalisé</span>
+                </label>
+            </div>
+        </li>
     </template>
-  </main>
+</main>
 
-  <footer class="container foot">
-    <small>Images détectées depuis iello.fr (og:image ou meilleure balise &lt;img&gt;), mises en cache localement. États Acheté/Réalisé partagés via Firestore.</small>
-  </footer>
+<footer class="container foot">
+    <small>Images détectées depuis iello.fr (og:image ou meilleure balise &lt;img&gt;), mises en cache localement. États
+        Acheté/Réalisé partagés via Firestore.</small>
+</footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script type="module">
+    import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        onSnapshot,
+        serverTimestamp,
+        collection
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // --- Config Firebase (publique) ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDsqe2N9vdgX31W_NPwQTwe-fXbG2i6KVQ",
-      authDomain: "exit-tracker-3b833.firebaseapp.com",
-      projectId: "exit-tracker-3b833",
-      storageBucket: "exit-tracker-3b833.firebasestorage.app",
-      messagingSenderId: "398468746425",
-      appId: "1:398468746425:web:5decb0342cf0372d4cdf68"
+        apiKey: "AIzaSyDsqe2N9vdgX31W_NPwQTwe-fXbG2i6KVQ",
+        authDomain: "exit-tracker-3b833.firebaseapp.com",
+        projectId: "exit-tracker-3b833",
+        storageBucket: "exit-tracker-3b833.firebasestorage.app",
+        messagingSenderId: "398468746425",
+        appId: "1:398468746425:web:5decb0342cf0372d4cdf68"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+    const db = getFirestore(app);
     const LIST_ID = "main";
 
     const IMG_CACHE_KEY = 'exit_img_cache_v2'; // <- v2 pour repartir propre si besoin
     let imgCache = JSON.parse(localStorage.getItem(IMG_CACHE_KEY) || '{}');
 
-    const toBadgeClass = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const toBadgeClass = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     let currentFilter = 'all';
-    document.querySelectorAll('.chip').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.diff;
-        render();
-      });
+    document.querySelectorAll('.chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.diff;
+            render();
+        });
     });
 
     // Données (image vide si inconnue)
     const GAMES = [
-  {"id":"exit-intrigue-a-venise","titre":"EXIT – Intrigue à Venise","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"},
-  {"id":"exit-course-poursuite-a-amsterdam","titre":"EXIT – Course Poursuite à Amsterdam","annee":2025,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/12/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light_FR-740x1085.jpg"},
+        {
+            "id": "exit-intrigue-a-venise",
+            "titre": "EXIT – Intrigue à Venise",
+            "annee": 2025,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"
+        },
+        {
+            "id": "exit-course-poursuite-a-amsterdam",
+            "titre": "EXIT – Course Poursuite à Amsterdam",
+            "annee": 2025,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2025/04/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-lacademie-de-magie",
+            "titre": "EXIT – L’Académie de Magie",
+            "annee": 2024,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2024/11/EXIT_Lacademie-de-Magie_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-levasion-de-prison",
+            "titre": "EXIT – L’évasion de Prison",
+            "annee": 2024,
+            "difficulte": "Expert",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2024/09/EXIT_Evasion-de-Prison_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-lheritage-du-voyageur",
+            "titre": "EXIT – L’héritage du Voyageur",
+            "annee": 2024,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2024/03/EXIT_Lheritage-du-Voyageur_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-la-disparition-de-sherlock-holmes",
+            "titre": "EXIT – La disparition de Sherlock Holmes",
+            "annee": 2023,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2023/10/EXIT_La-disparition-de-Sherlock-Holmes_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-bandit-de-fortune-city",
+            "titre": "EXIT – Le Bandit de Fortune City",
+            "annee": 2023,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2023/07/EXIT_Le-Bandit-de-Fortune-City_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-retour-a-la-cabane-abandonnee",
+            "titre": "EXIT – Le Retour à la Cabane Abandonnée",
+            "annee": 2023,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2023/07/EXIT_Le-Retour-a-la-Cabane-Abandonnee_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-perils-en-terres-du-milieu",
+            "titre": "EXIT – Périls en Terres du Milieu",
+            "annee": 2022,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2022/12/EXIT_Perils-en-Terres-du-Milieu_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-cimetiere-des-ombres",
+            "titre": "EXIT – Le Cimetière des Ombres",
+            "annee": 2022,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2022/09/EXIT_Le-cimetiere-des-Ombres_Mockup_Light-740x1085.jpg"
+        },
+        {
+            "id": "exit-la-porte-entre-les-mondes",
+            "titre": "EXIT – La Porte entre les Mondes",
+            "annee": 2022,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2022/03/EXIT_La-Porte-entre-les-Mondes_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-la-foret-enchantee",
+            "titre": "EXIT – La Forêt Enchantée",
+            "annee": 2022,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2022/04/EXIT_Foret-Enchantee_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-la-dame-de-la-brume",
+            "titre": "EXIT – La Dame de la Brume",
+            "annee": 2022,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2022/10/EXIT_La-Dame-de-la-Brume_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-vol-vers-linconnu",
+            "titre": "EXIT – Le Vol vers l’Inconnu",
+            "annee": 2021,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2021/05/EXIT_Le-Vol-vers-lInconnu_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-laffaire-du-mississippi",
+            "titre": "EXIT – L’Affaire du Mississippi",
+            "annee": 2021,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2021/05/EXIT_Laffaire-du-Mississippi_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-la-maison-des-enigmes",
+            "titre": "EXIT – La Maison des Énigmes",
+            "annee": 2020,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2020/09/EXIT_La-Maison-des-Enigmes_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-parc-de-lhorreur",
+            "titre": "EXIT – Le Parc de l’Horreur",
+            "annee": 2020,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2020/09/EXIT_Le-Parc-de-lHorreur_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-les-catacombes-de-leffroi",
+            "titre": "EXIT – Les Catacombes de l’Effroi",
+            "annee": 2020,
+            "difficulte": "Expert",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2020/07/EXIT_Les-Catacombes-de-lEffroi_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-le-musee-mysterieux",
+            "titre": "EXIT : Le Jeu – Le Musée Mystérieux",
+            "annee": 2019,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2019/08/EXIT_Le-Musee-Mysterieux_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-le-manoir-sinistre",
+            "titre": "EXIT : Le Jeu – Le Manoir Sinistre",
+            "annee": 2019,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2019/08/EXIT_Le-Manoir-Sinistre_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-tresor-englouti",
+            "titre": "EXIT – Le Trésor Englouti",
+            "annee": 2018,
+            "difficulte": "Débutant",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2018/10/EXIT_Le-Tresor-Englouti_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-le-chateau-interdit",
+            "titre": "EXIT : Le Jeu – Le Château Interdit",
+            "annee": 2018,
+            "difficulte": "Expert",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2018/07/EXIT_Le-Chateau-Interdit_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-la-station-polaire",
+            "titre": "EXIT : Le Jeu – La Station Polaire",
+            "annee": 2018,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2018/05/EXIT_La-Station-Polaire_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-le-laboratoire-secret",
+            "titre": "EXIT : Le Jeu – Le Laboratoire Secret",
+            "annee": 2017,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2017/09/EXIT_Laboratoire-Secret_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-le-tombeau-du-pharaon",
+            "titre": "EXIT : Le Jeu – Le Tombeau du Pharaon",
+            "annee": 2017,
+            "difficulte": "Expert",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2017/09/EXIT_Tombeau-du-Pharaon_Mockup_Light.jpg"
+        },
+        {
+            "id": "exit-le-jeu-la-cabane-abandonnee",
+            "titre": "EXIT : Le Jeu – La Cabane Abandonnée",
+            "annee": 2017,
+            "difficulte": "Confirmé",
+            "editeur": "IELLO",
+            "image": "https://iello.fr/wp-content/uploads/2017/09/EXIT_Cabane-Abandonnee_Mockup_Light.jpg"
+        }
+    ];
 
-  {"id":"exit-lacademie-de-magie","titre":"EXIT – L’Académie de Magie","annee":2024,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/10/EXIT_Academie-de-Magie_Mockup_Light-740x1085.jpg"},
-  {"id":"exit-levasion-de-prison","titre":"EXIT – L’évasion de Prison","annee":2024,"difficulte":"Expert","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/09/EXIT_Evasion-de-Prison_Mockup_Sticker_Light-740x1085.jpg"},
-  {"id":"exit-lheritage-du-voyageur","titre":"EXIT – L’héritage du Voyageur","annee":2024,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2024/02/70127-IELLO-EXIT-L-Heritage-du-Voyageur-Confirme-Sortie-0803202_1x1200-740x740.jpg"},
-
-  {"id":"exit-la-disparition-de-sherlock-holmes","titre":"EXIT – La disparition de Sherlock Holmes","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2023/09/EXIT_Disparition-de-Sherlock-Holmes_Mockup_Light.png"},
-  {"id":"exit-le-bandit-de-fortune-city","titre":"EXIT – Le Bandit de Fortune City","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2023/05/EXIT_Le-Bandit-de-Fortune-City_Mockup_Light-740x1084.jpg"},
-  {"id":"exit-le-retour-a-la-cabane-abandonnee","titre":"EXIT – Le Retour à la Cabane Abandonnée","annee":2023,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2023/05/EXIT_Retour-a-la-Cabane-Abandonnee_Mockup-Light.jpg"},
-
-  {"id":"exit-perils-en-terres-du-milieu","titre":"EXIT – Périls en Terres du Milieu","annee":2022,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2022/12/EXIT_Perils-en-Terres-du-Milieu_Mockup_Light.jpg"},
-  {"id":"exit-le-cimetiere-des-ombres","titre":"EXIT – Le Cimetière des Ombres","annee":2022,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2022/09/EXIT_Le-cimetiere-des-Ombres_Mockup_Light-740x1085.jpg"},
-  {"id":"exit-la-porte-entre-les-mondes","titre":"EXIT – La Porte entre les Mondes","annee":2022,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2022/04/EXIT_Porte-entre-les-Mondes_Mockup-Light.png"},
-
-  {"id":"exit-le-vol-vers-linconnu","titre":"EXIT – Le Vol vers l’Inconnu","annee":2021,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2021/03/EXIT_Vol-vers-Inconnu_Light-740x1085.png"},
-  {"id":"exit-laffaire-du-mississippi","titre":"EXIT – L’Affaire du Mississippi","annee":2021,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2021/03/EXIT_Mississippi_Mockup_Light-740x1085.png"},
-
-  {"id":"exit-la-maison-des-enigmes","titre":"EXIT – La Maison des Énigmes","annee":2020,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2020/09/EXIT_Maison-des-Enigmes_Mockup-Light.jpg"},
-  {"id":"exit-le-parc-de-lhorreur","titre":"EXIT – Le Parc de l’Horreur","annee":2020,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2020/07/EXIT_Parc-de-lHorreur_Mockup_Light.jpg"},
-  {"id":"exit-les-catacombes-de-leffroi","titre":"EXIT – Les Catacombes de l’Effroi","annee":2020,"difficulte":"Expert","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2020/05/EXIT_Catacombes-de-lEffroi_Mockup_Light.jpg"},
-
-  {"id":"exit-le-jeu-le-musee-mysterieux","titre":"EXIT : Le Jeu – Le Musée Mystérieux","annee":2019,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2019/09/EXIT_Musee-Mysterieux_Mockup_Light.jpg"},
-  {"id":"exit-le-jeu-le-manoir-sinistre","titre":"EXIT : Le Jeu – Le Manoir Sinistre","annee":2019,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2019/10/EXIT_Manoir-Sinistre_Mockup_Light.jpg"},
-
-  {"id":"exit-le-tresor-englouti","titre":"EXIT – Le Trésor Englouti","annee":2018,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2018/08/EXIT_Tresor-Englouti_Mockup_Light.jpg"},
-  {"id":"exit-le-jeu-le-chateau-interdit","titre":"EXIT : Le Jeu – Le Château Interdit","annee":2018,"difficulte":"Expert","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2018/06/EXIT_Chateau-Interdit_Mockup_Light.jpg"},
-  {"id":"exit-le-jeu-la-station-polaire","titre":"EXIT : Le Jeu – La Station Polaire","annee":2018,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2018/04/EXIT_Station-Polaire_Mockup_Light.jpg"},
-
-  {"id":"exit-le-jeu-le-laboratoire-secret","titre":"EXIT : Le Jeu – Le Laboratoire Secret","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2017/09/EXIT_Laboratoire-Secret_Mockup_Light.jpg"},
-  {"id":"exit-le-jeu-le-tombeau-du-pharaon","titre":"EXIT : Le Jeu – Le Tombeau du Pharaon","annee":2017,"difficulte":"Expert","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2017/09/EXIT_Tombeau-du-Pharaon_Mockup_Light.jpg"},
-  {"id":"exit-le-jeu-la-cabane-abandonnee","titre":"EXIT : Le Jeu – La Cabane Abandonnée","annee":2017,"difficulte":"Confirmé","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2017/09/EXIT_Cabane-Abandonnee_Mockup_Light.jpg"},
-
-  {"id":"exit-la-foret-enchantee","titre":"EXIT – La Forêt Enchantée","annee":2022,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2022/04/EXIT_Foret-Enchantee_Mockup_Light.jpg"},
-  {"id":"exit-la-dame-de-la-brume","titre":"EXIT – La Dame de la Brume","annee":2022,"difficulte":"Débutant","editeur":"IELLO","image":"https://iello.fr/wp-content/uploads/2022/10/EXIT_Dame-de-la-Brume_Mockup_Light.jpg"}
-];
 
     // --- Firestore temps réel (un seul espace partagé) ---
     let statuses = {};
     const colRef = collection(db, 'lists', LIST_ID, 'statuses');
-    onSnapshot(colRef, (snap)=>{
-      const next = {};
-      snap.forEach(docu => { next[docu.id] = docu.data(); });
-      statuses = next;
-      document.getElementById('syncState').textContent = 'Connecté (temps réel)';
-      render();
-    }, (err)=>{
-      console.error(err);
-      document.getElementById('syncState').textContent = 'Erreur de connexion';
+    onSnapshot(colRef, (snap) => {
+        const next = {};
+        snap.forEach(docu => {
+            next[docu.id] = docu.data();
+        });
+        statuses = next;
+        document.getElementById('syncState').textContent = 'Connecté (temps réel)';
+        render();
+    }, (err) => {
+        console.error(err);
+        document.getElementById('syncState').textContent = 'Erreur de connexion';
     });
 
     // --- Rendu & interactions ---
     document.addEventListener('DOMContentLoaded', () => {
-      render();
-      // précharge les images manquantes en arrière-plan
-      warmUpImages();
+        render();
+        // précharge les images manquantes en arrière-plan
+        warmUpImages();
     });
 
-    function render(){
-      const list = document.getElementById('gameList');
-      const tpl = document.getElementById('gameItemTpl');
-      list.innerHTML = '';
+    function render() {
+        const list = document.getElementById('gameList');
+        const tpl = document.getElementById('gameItemTpl');
+        list.innerHTML = '';
 
-      const filtered = GAMES
-        .filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter)
-        .sort((a,b)=> (b.annee - a.annee) || a.titre.localeCompare(b.titre,'fr'));
+        const filtered = GAMES
+            .filter(g => currentFilter === 'all' ? true : g.difficulte === currentFilter)
+            .sort((a, b) => (b.annee - a.annee) || a.titre.localeCompare(b.titre, 'fr'));
 
-      for (const g of filtered){
-        const node = tpl.content.cloneNode(true);
+        for (const g of filtered) {
+            const node = tpl.content.cloneNode(true);
 
-        // --- Image (cache -> directe -> fetch HTML) ---
-        const img = node.querySelector('.cover');
-        img.alt = g.titre;
-        const cached = imgCache[g.id];
-        if (cached) {
-          img.src = cached;
-        } else if (g.image) {
-          img.src = g.image;
-          img.addEventListener('error', () => fetchAndCacheImageFromPage(g, img), { once:true });
-        } else {
-          fetchAndCacheImageFromPage(g, img);
+            // --- Image (cache -> directe -> fetch HTML) ---
+            const img = node.querySelector('.cover');
+            img.alt = g.titre;
+            const cached = imgCache[g.id];
+            if (cached) {
+                img.src = cached;
+            } else if (g.image) {
+                img.src = g.image;
+                img.addEventListener('error', () => fetchAndCacheImageFromPage(g, img), {once: true});
+            } else {
+                fetchAndCacheImageFromPage(g, img);
+            }
+
+            // --- Titre + badges ---
+            node.querySelector('.title').textContent = g.titre;
+            const cls = g.difficulte ? toBadgeClass(g.difficulte) : '';
+            node.querySelector('.meta').innerHTML =
+                (g.difficulte ? `<span class="badge ${cls}">${g.difficulte}</span>` : '') +
+                (g.annee ? ` • ${g.annee}` : '') +
+                (g.editeur ? ` • ${g.editeur}` : '');
+
+            // --- États partagés ---
+            const ownCb = node.querySelector('.ownToggle');
+            const doneCb = node.querySelector('.doneToggle');
+            ownCb.checked = !!(statuses[g.id]?.owned);
+            doneCb.checked = !!(statuses[g.id]?.done);
+
+            ownCb.addEventListener('change', () => saveStatus(g.id, {owned: ownCb.checked, done: doneCb.checked}));
+            doneCb.addEventListener('change', () => saveStatus(g.id, {owned: ownCb.checked, done: doneCb.checked}));
+
+            list.appendChild(node);
         }
 
-        // --- Titre + badges ---
-        node.querySelector('.title').textContent = g.titre;
-        const cls = g.difficulte ? toBadgeClass(g.difficulte) : '';
-        node.querySelector('.meta').innerHTML =
-          (g.difficulte ? `<span class="badge ${cls}">${g.difficulte}</span>` : '') +
-          (g.annee ? ` • ${g.annee}` : '') +
-          (g.editeur ? ` • ${g.editeur}` : '');
-
-        // --- États partagés ---
-        const ownCb  = node.querySelector('.ownToggle');
-        const doneCb = node.querySelector('.doneToggle');
-        ownCb.checked  = !!(statuses[g.id]?.owned);
-        doneCb.checked = !!(statuses[g.id]?.done);
-
-        ownCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
-        doneCb.addEventListener('change', () => saveStatus(g.id, { owned: ownCb.checked, done: doneCb.checked }));
-
-        list.appendChild(node);
-      }
-
-      updateStats();
-      list.setAttribute('aria-busy','false');
+        updateStats();
+        list.setAttribute('aria-busy', 'false');
     }
 
-    async function saveStatus(gameId, data){
-      await setDoc(doc(db, 'lists', LIST_ID, 'statuses', gameId), { ...data, updatedAt: serverTimestamp() }, { merge:true });
+    async function saveStatus(gameId, data) {
+        await setDoc(doc(db, 'lists', LIST_ID, 'statuses', gameId), {
+            ...data,
+            updatedAt: serverTimestamp()
+        }, {merge: true});
     }
 
     // --- Récup image depuis HTML de la fiche IELLO (robuste) ---
-    async function fetchAndCacheImageFromPage(g, imgEl){
-      try{
-        const pageUrl = 'https://iello.fr/jeux/' + g.id + '/';
-        // Proxy texte pour éviter CORS ; on teste plusieurs variantes http/https (certains proxys n'aiment pas les redirs)
-        const candidates = [
-          'https://r.jina.ai/http://iello.fr/jeux/' + g.id + '/',
-          'https://r.jina.ai/https://iello.fr/jeux/' + g.id + '/'
-        ];
-        let html = '';
-        for (const u of candidates){
-          try{ html = await fetch(u, {cache:'no-store'}).then(r=>r.text()); if (html && html.length>200) break; }catch{}
+    async function fetchAndCacheImageFromPage(g, imgEl) {
+        try {
+            const pageUrl = 'https://iello.fr/jeux/' + g.id + '/';
+            // Proxy texte pour éviter CORS ; on teste plusieurs variantes http/https (certains proxys n'aiment pas les redirs)
+            const candidates = [
+                'https://r.jina.ai/http://iello.fr/jeux/' + g.id + '/',
+                'https://r.jina.ai/https://iello.fr/jeux/' + g.id + '/'
+            ];
+            let html = '';
+            for (const u of candidates) {
+                try {
+                    html = await fetch(u, {cache: 'no-store'}).then(r => r.text());
+                    if (html && html.length > 200) break;
+                } catch {
+                }
+            }
+            if (!html) return;
+
+            // 1) og:image (secure -> normal -> twitter)
+            let url = pickOgImage(html);
+
+            // 2) sinon on scanne toutes les <img> et on choisit la meilleure
+            if (!url) url = pickBestImageFromImgs(html, g.titre);
+
+            if (!url) return;
+
+            // normalisation
+            url = url.replace(/&amp;|&#038;/g, '&');
+            if (url.startsWith('//')) url = 'https:' + url;
+            if (!/^https?:\/\//i.test(url)) {
+                url = new URL(url.startsWith('/') ? url : ('/' + url), 'https://iello.fr').toString();
+            }
+
+            // mémorise + applique
+            imgCache[g.id] = url;
+            localStorage.setItem(IMG_CACHE_KEY, JSON.stringify(imgCache));
+            if (imgEl) imgEl.src = url;
+        } catch (e) { /* silencieux */
         }
-        if (!html) return;
+    }
 
-        // 1) og:image (secure -> normal -> twitter)
-        let url = pickOgImage(html);
+    function pickOgImage(html) {
+        // og:image:secure_url ou og:image ou twitter:image
+        const re = (name) => new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]+content=["']([^"']+)["']`, 'i');
+        return (html.match(re('og:image:secure_url'))?.[1]
+            || html.match(re('og:image'))?.[1]
+            || html.match(re('twitter:image'))?.[1]
+        ) || '';
+    }
 
-        // 2) sinon on scanne toutes les <img> et on choisit la meilleure
-        if (!url) url = pickBestImageFromImgs(html, g.titre);
+    function pickBestImageFromImgs(html, title) {
+        // récupère toutes les balises <img ... src="...">
+        const srcs = Array.from(html.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/ig)).map(m => m[1]);
 
-        if (!url) return;
+        // On garde uniquement les médias WordPress ou images iello, on ignore les icônes/avatars
+        let candidates = srcs.filter(s => {
+            if (!/\.(png|jpe?g|webp)(\?|$)/i.test(s)) return false;
+            const lower = s.toLowerCase();
+            // éviter les tout petits thumbs (150x150, 300x300, etc.)
+            if (/-\d{2,4}x\d{2,4}\.(png|jpe?g|webp)$/i.test(lower)) {
+                // On élimine les tailles < 400px dans un des côtés
+                const m = lower.match(/-(\d{2,4})x(\d{2,4})\.(png|jpe?g|webp)$/i);
+                const w = parseInt(m?.[1] || '0', 10), h = parseInt(m?.[2] || '0', 10);
+                if (Math.max(w, h) < 400) return false;
+            }
+            // préférer images "Mockup", "box", "exit-" etc.
+            return /iello\.fr\/wp-content\/uploads\//.test(lower) || /iellogames\.com/.test(lower);
+        });
 
-        // normalisation
-        url = url.replace(/&amp;|&#038;/g,'&');
-        if (url.startsWith('//')) url = 'https:' + url;
-        if (!/^https?:\/\//i.test(url)){
-          url = new URL(url.startsWith('/')? url : ('/'+url), 'https://iello.fr').toString();
+        // Heuristique de scoring
+        const score = (u) => {
+            const l = u.toLowerCase();
+            let s = 0;
+            if (/mockup|box|pack|cover/.test(l)) s += 5;
+            if (/-\d{3,4}x\d{3,4}\./.test(l)) s += 3;           // grandes tailles
+            if (/740x1085|1085x/.test(l)) s += 4;               // mockups verticaux
+            if (/600x600/.test(l)) s += 2;                      // carré correct
+            if (/exit/.test(l)) s += 1;
+            // léger bonus si le titre (sans accents) apparaît
+            const norm = (x) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            if (norm(l).includes(norm(title).slice(0, 8))) s += 1;
+            return s;
+        };
+
+        candidates.sort((a, b) => score(b) - score(a));
+        return candidates[0] || '';
+    }
+
+    async function warmUpImages() {
+        // déclenche la découverte d'image pour les boîtes sans cache ni URL directe
+        const tasks = GAMES.filter(g => !imgCache[g.id] && !g.image)
+            .map(g => fetchAndCacheImageFromPage(g, null));
+        // on ne bloque pas le rendu ; c’est un “best effort”
+        try {
+            await Promise.allSettled(tasks);
+        } catch {
         }
-
-        // mémorise + applique
-        imgCache[g.id] = url;
-        localStorage.setItem(IMG_CACHE_KEY, JSON.stringify(imgCache));
-        if (imgEl) imgEl.src = url;
-      }catch(e){ /* silencieux */ }
+        // re-render pour afficher celles qui auraient été trouvées
+        render();
     }
 
-    function pickOgImage(html){
-      // og:image:secure_url ou og:image ou twitter:image
-      const re = (name)=> new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]+content=["']([^"']+)["']`,'i');
-      return (html.match(re('og:image:secure_url'))?.[1]
-       ||  html.match(re('og:image'))?.[1]
-       ||  html.match(re('twitter:image'))?.[1]
-      ) || '';
+    function updateStats() {
+        const total = GAMES.filter(g => currentFilter === 'all' ? true : g.difficulte === currentFilter).length;
+
+        const ownCount = Object.entries(statuses).filter(([id, s]) => {
+            const g = GAMES.find(x => x.id === id);
+            return s.owned && (currentFilter === 'all' || g?.difficulte === currentFilter);
+        }).length;
+
+        const doneCount = Object.entries(statuses).filter(([id, s]) => {
+            const g = GAMES.find(x => x.id === id);
+            return s.done && (currentFilter === 'all' || g?.difficulte === currentFilter);
+        }).length;
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('ownedCount').textContent = ownCount;
+        document.getElementById('doneCount').textContent = doneCount;
+        document.getElementById('ownedPct').textContent = total ? Math.round(ownCount / total * 100) + '%' : '0%';
+        document.getElementById('donePct').textContent = total ? Math.round(doneCount / total * 100) + '%' : '0%';
     }
-
-    function pickBestImageFromImgs(html, title){
-      // récupère toutes les balises <img ... src="...">
-      const srcs = Array.from(html.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/ig)).map(m=>m[1]);
-
-      // On garde uniquement les médias WordPress ou images iello, on ignore les icônes/avatars
-      let candidates = srcs.filter(s=>{
-        if (!/\.(png|jpe?g|webp)(\?|$)/i.test(s)) return false;
-        const lower = s.toLowerCase();
-        // éviter les tout petits thumbs (150x150, 300x300, etc.)
-        if (/-\d{2,4}x\d{2,4}\.(png|jpe?g|webp)$/i.test(lower)){
-          // On élimine les tailles < 400px dans un des côtés
-          const m = lower.match(/-(\d{2,4})x(\d{2,4})\.(png|jpe?g|webp)$/i);
-          const w = parseInt(m?.[1]||'0',10), h = parseInt(m?.[2]||'0',10);
-          if (Math.max(w,h) < 400) return false;
-        }
-        // préférer images "Mockup", "box", "exit-" etc.
-        return /iello\.fr\/wp-content\/uploads\//.test(lower) || /iellogames\.com/.test(lower);
-      });
-
-      // Heuristique de scoring
-      const score = (u)=>{
-        const l = u.toLowerCase();
-        let s = 0;
-        if (/mockup|box|pack|cover/.test(l)) s += 5;
-        if (/-\d{3,4}x\d{3,4}\./.test(l)) s += 3;           // grandes tailles
-        if (/740x1085|1085x/.test(l)) s += 4;               // mockups verticaux
-        if (/600x600/.test(l)) s += 2;                      // carré correct
-        if (/exit/.test(l)) s += 1;
-        // léger bonus si le titre (sans accents) apparaît
-        const norm = (x)=> x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-        if (norm(l).includes(norm(title).slice(0,8))) s += 1;
-        return s;
-      };
-
-      candidates.sort((a,b)=> score(b)-score(a));
-      return candidates[0] || '';
-    }
-
-    async function warmUpImages(){
-      // déclenche la découverte d'image pour les boîtes sans cache ni URL directe
-      const tasks = GAMES.filter(g => !imgCache[g.id] && !g.image)
-        .map(g => fetchAndCacheImageFromPage(g, null));
-      // on ne bloque pas le rendu ; c’est un “best effort”
-      try{ await Promise.allSettled(tasks); }catch{}
-      // re-render pour afficher celles qui auraient été trouvées
-      render();
-    }
-
-    function updateStats(){
-      const total = GAMES.filter(g => currentFilter==='all' ? true : g.difficulte === currentFilter).length;
-
-      const ownCount  = Object.entries(statuses).filter(([id,s])=>{
-        const g = GAMES.find(x=>x.id===id);
-        return s.owned && (currentFilter==='all' || g?.difficulte===currentFilter);
-      }).length;
-
-      const doneCount = Object.entries(statuses).filter(([id,s])=>{
-        const g = GAMES.find(x=>x.id===id);
-        return s.done && (currentFilter==='all' || g?.difficulte===currentFilter);
-      }).length;
-
-      document.getElementById('totalCount').textContent = total;
-      document.getElementById('ownedCount').textContent = ownCount;
-      document.getElementById('doneCount').textContent  = doneCount;
-      document.getElementById('ownedPct').textContent   = total ? Math.round(ownCount/total*100)+'%' : '0%';
-      document.getElementById('donePct').textContent    = total ? Math.round(doneCount/total*100)+'%' : '0%';
-    }
-  </script>
+</script>
 </body>
 </html>
