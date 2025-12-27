@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-    <title>Mes EXIT – Liste partagée</title>
+    <title>EXIT – Liste partagée</title>
     <style>
         :root {
             --fg: #1e1e22;
@@ -180,7 +180,7 @@
 </head>
 <body>
 <header class="container">
-    <h1>Mes EXIT</h1>
+    <h1>Les EXIT</h1>
     <p class="subtitle">Boîtes classiques. Coche “Acheté” et/ou “Réalisé”. Liste partagée (un seul espace commun).</p>
     <div class="sync" id="syncState">Connexion…</div>
 
@@ -221,6 +221,8 @@
 </main>
 
 <footer class="container foot">
+    <small>Projet réalisé par Antoine LE LOUËT</small>
+    <br/>
     <small>Images détectées depuis iello.fr (og:image ou meilleure balise &lt;img&gt;), mises en cache localement. États
         Acheté/Réalisé partagés via Firestore.</small>
 </footer>
@@ -265,7 +267,7 @@
     });
 
     // Données (image vide si inconnue)
-    const GAMES = [
+    let GAMES = [
         {
             "id": "exit-intrigue-a-venise",
             "titre": "EXIT – Intrigue à Venise",
@@ -506,7 +508,7 @@
             "editeur": "IELLO",
             "image": "https://iello.fr/wp-content/uploads/2018/04/EXIT_mockup_Ile-light.png"
         }
-    ];
+    ];;
 
 
     // --- Firestore temps réel (un seul espace partagé) ---
@@ -526,10 +528,18 @@
     });
 
     // --- Rendu & interactions ---
-    document.addEventListener('DOMContentLoaded', () => {
-        render();
-        // précharge les images manquantes en arrière-plan
-        warmUpImages();
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('data/games.json');
+            GAMES = await response.json();
+
+            render();
+            // précharge les images manquantes en arrière-plan
+            warmUpImages();
+        } catch (err) {
+            console.error("Erreur lors du chargement des jeux :", err);
+            document.getElementById('syncState').textContent = 'Erreur chargement données';
+        }
     });
 
     function render() {

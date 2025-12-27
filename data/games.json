@@ -3,9 +3,9 @@
     "id": "exit-intrigue-a-venise",
     "titre": "EXIT – Intrigue à Venise",
     "annee": 2025,
-    "difficulte": "Expert",
+    "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-intrigue-a-venise/"
+    "image": "https://iello.fr/wp-content/uploads/2025/07/EXIT_Intrigue-a-Venise_Mockup_light-740x1085.jpg"
   },
   {
     "id": "exit-course-poursuite-a-amsterdam",
@@ -13,7 +13,7 @@
     "annee": 2025,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-course-poursuite-a-amsterdam/"
+    "image": "https://iello.fr/wp-content/uploads/2024/12/EXIT_Course-Poursuite-a-Amsterdam_Mockup_Light_FR.jpg"
   },
   {
     "id": "exit-lacademie-de-magie",
@@ -21,7 +21,7 @@
     "annee": 2024,
     "difficulte": "Débutant",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-lacademie-de-magie/"
+    "image": "https://iello.fr/wp-content/uploads/2024/10/EXIT_Academie-de-Magie_Mockup_Light.jpg"
   },
   {
     "id": "exit-levasion-de-prison",
@@ -29,15 +29,7 @@
     "annee": 2024,
     "difficulte": "Expert",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-levasion-de-prison/"
-  },
-  {
-    "id": "exit-calendrier-de-lavent-la-tempete-silencieuse",
-    "titre": "EXIT – Calendrier de l’Avent – La Tempête Silencieuse",
-    "annee": 2024,
-    "difficulte": "Débutant",
-    "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-calendrier-de-lavent-la-tempete-silencieuse/"
+    "image": "https://iello.fr/wp-content/uploads/2024/09/EXIT_Evasion-de-Prison_Mockup_Sticker_Light.jpg"
   },
   {
     "id": "exit-lheritage-du-voyageur",
@@ -45,7 +37,7 @@
     "annee": 2024,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-lheritage-du-voyageur/"
+    "image": "https://iello.fr/wp-content/uploads/2024/02/70127-IELLO-EXIT-L-Heritage-du-Voyageur-Confirme-Sortie-0803202_1x1200.jpg"
   },
   {
     "id": "exit-la-disparition-de-sherlock-holmes",
@@ -53,7 +45,7 @@
     "annee": 2023,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-la-disparition-de-sherlock-holmes/"
+    "image": "https://iello.fr/wp-content/uploads/2023/09/EXIT_La-Disparition-de-Sherlock-Holmes_Mockup_Light.jpg"
   },
   {
     "id": "exit-le-bandit-de-fortune-city",
@@ -61,7 +53,7 @@
     "annee": 2023,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-bandit-de-fortune-city/"
+    "image": "https://iello.fr/wp-content/uploads/2023/05/EXIT_Le-Bandit-de-Fortune-City_Mockup_Light.jpg"
   },
   {
     "id": "exit-le-retour-a-la-cabane-abandonnee",
@@ -69,7 +61,7 @@
     "annee": 2023,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-retour-a-la-cabane-abandonnee/"
+    "image": "https://iello.fr/wp-content/uploads/2023/05/EXIT_Retour-a-la-Cabane-Abandonnee_Mockup-Light.jpg"
   },
   {
     "id": "exit-perils-en-terres-du-milieu",
@@ -77,23 +69,7 @@
     "annee": 2022,
     "difficulte": "Débutant",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-perils-en-terres-du-milieu/"
-  },
-  {
-    "id": "exit-la-dame-de-la-brume",
-    "titre": "EXIT – La Dame de la Brume",
-    "annee": 2022,
-    "difficulte": "Débutant",
-    "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-la-dame-de-la-brume/"
-  },
-  {
-    "id": "exit-le-labyrinthe-maudit",
-    "titre": "EXIT – Le Labyrinthe Maudit",
-    "annee": 2022,
-    "difficulte": "Débutant",
-    "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-labyrinthe-maudit/"
+    "image": "https://iello.fr/wp-content/uploads/2022/08/EXIT_Perils-en-Terre-du-Milieu_Mockup_Light.jpg"
   },
   {
     "id": "exit-le-cimetiere-des-ombres",
@@ -101,7 +77,7 @@
     "annee": 2022,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-cimetiere-des-ombres/"
+    "image": "https://iello.fr/wp-content/uploads/2022/09/EXIT_Le-cimetiere-des-Ombres_Mockup_Light.jpg"
   },
   {
     "id": "exit-la-porte-entre-les-mondes",
@@ -109,15 +85,63 @@
     "annee": 2022,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-la-porte-entre-les-mondes/"
+    "image": "https://iello.fr/wp-content/uploads/2022/04/EXIT_Porte-entre-les-Mondes_Mockup-Light.png"
   },
   {
-    "id": "exit-le-jeu-le-manoir-sinistre",
-    "titre": "EXIT : Le Jeu – Le Manoir Sinistre",
-    "annee": 2019,
+    "id": "exit-la-foret-enchantee",
+    "titre": "EXIT – La Forêt Enchantée",
+    "annee": 2022,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2022/04/EXIT_Foret-enchantee_Mockup_Light.jpg"
+  },
+  {
+    "id": "exit-la-dame-de-la-brume",
+    "titre": "EXIT – La Dame de la Brume",
+    "annee": 2022,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2022/10/EXIT_La-Dame-de-la-Brume_Mockup_Light.jpg"
+  },
+  {
+    "id": "exit-le-vol-vers-linconnu",
+    "titre": "EXIT – Le Vol vers l’Inconnu",
+    "annee": 2021,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2021/03/EXIT_Vol-vers-Inconnu_Light.png"
+  },
+  {
+    "id": "exit-laffaire-du-mississippi",
+    "titre": "EXIT – L’Affaire du Mississippi",
+    "annee": 2021,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-le-manoir-sinistre/"
+    "image": "https://iello.fr/wp-content/uploads/2021/03/EXIT_Mississippi_Mockup_Light.png"
+  },
+  {
+    "id": "exit-la-maison-des-enigmes",
+    "titre": "EXIT – La Maison des Énigmes",
+    "annee": 2020,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2020/09/EXIT_Maison-des-enigmes_Mockup-2019_Light.png"
+  },
+  {
+    "id": "exit-le-parc-de-lhorreur",
+    "titre": "EXIT – Le Parc de l’Horreur",
+    "annee": 2020,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2020/07/EXIT_Parc-horreur_Mockup-2019_Light.jpg"
+  },
+  {
+    "id": "exit-les-catacombes-de-leffroi",
+    "titre": "EXIT – Les Catacombes de l’Effroi",
+    "annee": 2020,
+    "difficulte": "Expert",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2020/07/EXIT_Catacombes_Mockup-2019_light-1.jpg"
   },
   {
     "id": "exit-le-jeu-le-musee-mysterieux",
@@ -125,7 +149,15 @@
     "annee": 2019,
     "difficulte": "Débutant",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-le-musee-mysterieux/"
+    "image": "https://iello.fr/wp-content/uploads/2019/07/EXIT_Musee-mysterieux_Mockup-2020_7-millions_light.jpg"
+  },
+  {
+    "id": "exit-le-jeu-le-manoir-sinistre",
+    "titre": "EXIT : Le Jeu – Le Manoir Sinistre",
+    "annee": 2019,
+    "difficulte": "Confirmé",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2019/07/EXIT_Manoir_Mockup-light.png"
   },
   {
     "id": "exit-le-tresor-englouti",
@@ -133,7 +165,7 @@
     "annee": 2018,
     "difficulte": "Débutant",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-tresor-englouti/"
+    "image": "https://iello.fr/wp-content/uploads/2018/08/EXIT_Tresor-englouti_Mockup-2020_7-millions_light.jpg"
   },
   {
     "id": "exit-le-jeu-le-chateau-interdit",
@@ -141,7 +173,7 @@
     "annee": 2018,
     "difficulte": "Expert",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-le-chateau-interdit/"
+    "image": "https://iello.fr/wp-content/uploads/2018/04/EXIT_Chateau-interdit_Mockup-2019_Light.jpg"
   },
   {
     "id": "exit-le-jeu-la-station-polaire",
@@ -149,7 +181,7 @@
     "annee": 2018,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-la-station-polaire/"
+    "image": "https://iello.fr/wp-content/uploads/2018/04/EXIT_mockup_Station-light.png"
   },
   {
     "id": "exit-le-jeu-le-laboratoire-secret",
@@ -157,7 +189,7 @@
     "annee": 2017,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-le-laboratoire-secret/"
+    "image": "https://iello.fr/wp-content/uploads/2017/07/EXIT_mockup_Labo_web.jpg"
   },
   {
     "id": "exit-le-jeu-le-tombeau-du-pharaon",
@@ -165,7 +197,7 @@
     "annee": 2017,
     "difficulte": "Expert",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-le-tombeau-du-pharaon/"
+    "image": "https://iello.fr/wp-content/uploads/2017/07/EXIT_mockup_Pharaon_web.jpg"
   },
   {
     "id": "exit-le-jeu-la-cabane-abandonnee",
@@ -173,6 +205,38 @@
     "annee": 2017,
     "difficulte": "Confirmé",
     "editeur": "IELLO",
-    "imagePage": "iello.fr/jeux/exit-le-jeu-la-cabane-abandonnee/"
+    "image": "https://iello.fr/wp-content/uploads/2017/09/EXIT_Cabane-Abandonnee_Mockup_Light.jpg"
+  },
+  {
+    "id": "exit-cap-sur-catan",
+    "titre": "EXIT – Cap sur Catan",
+    "annee": 2025,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2025/08/EXIT_Catan_Mockup_Light.jpg"
+  },
+  {
+    "id": "exit-le-labyrinthe-maudit",
+    "titre": "EXIT – Le Labyrinthe Maudit",
+    "annee": 2022,
+    "difficulte": "Débutant",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2022/09/EXIT_Le-Labyrinthe-Maudit_Mockup_Light.jpg"
+  },
+  {
+    "id": "exit-le-cadavre-de-lorient-express",
+    "titre": "EXIT : Le Cadavre de l’Orient Express",
+    "annee": 2018,
+    "difficulte": "Confirmé",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2018/08/Exit-7_mockup-light.png"
+  },
+  {
+    "id": "exit-le-jeu-lile-oubliee",
+    "titre": "EXIT – L’Île Oubliée",
+    "annee": 2018,
+    "difficulte": "Confirmé",
+    "editeur": "IELLO",
+    "image": "https://iello.fr/wp-content/uploads/2018/04/EXIT_mockup_Ile-light.png"
   }
-]
+];
