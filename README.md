@@ -64,3 +64,13 @@ Ensuite ouvrir :
 ## Configuration Firebase (si vous dupliquez le projet)
 
 Dans `index.html`, remplacer la config Firebase par la vôtre :
+js const firebaseConfig = { apiKey: "<FIREBASE_API_KEY>", authDomain: " .firebaseapp.com", projectId: "  ", storageBucket: ".appspot.com", messagingSenderId: "  ", appId: "" };
+
+
+Et vérifier les règles Firestore pour autoriser (ou non) l’écriture/lecture selon votre besoin.
+
+## Idées d’amélioration (optionnel)
+- Charger `data/games.json` au lieu de dupliquer la liste dans `index.html`
+- Ajouter une page “admin” / import pour mettre à jour les jeux
+- Ajouter une recherche (titre)
+- Gérer plusieurs listes (plusieurs `LIST_ID`)
