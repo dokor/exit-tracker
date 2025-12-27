@@ -1,7 +1,7 @@
 const CACHE_VERSION = 'v1.4.0';
 const CACHE_NAME = 'exit-cache-' + CACHE_VERSION;
 const ASSETS = [
-  './','./index.html','./style.css','./app.js','./manifest.webmanifest'
+  './','./index.html','./style.css','./manifest.webmanifest'
 ];
 
 self.addEventListener('install', (e) => {

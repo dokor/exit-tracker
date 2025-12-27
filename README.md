@@ -49,7 +49,6 @@ Les coches **Acheté/Réalisé** sont partagées en temps réel avec Firestore :
 - `sw.js` : service worker (cache PWA)
 - `manifest.webmanifest` : manifest PWA
 - `data/games.json` : données de jeux (source potentielle)
-- `app.js` : version alternative / test (localStorage only)
 
 ## Lancer en local
 
